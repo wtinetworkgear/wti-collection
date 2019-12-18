@@ -30,7 +30,7 @@ Inventory Variables
 
 The common variables that should be defined in your inventory for your WTI host are:
 
-* `cpm_url`: IP address of device in `A.B.C.D` format.  
+* `cpm_url`: IP address or name of device.  
 * `cpm_username`: Username for device in `plaintext` format  
 * `cpm_password`: Password for device in `plaintext` format  
 * `use_https`: Set `True` or `False` depending on if Ansible should use a secure https connection  
