@@ -172,7 +172,7 @@ def assemble_json(cpmmodule, existing_interface):
     if (index is not None):
         if isinstance(index, list):
             for x in index:
-                indices.insert(total_indices, (int(to_native(x)))-1)
+                indices.insert(total_indices, (int(to_native(x))) - 1)
                 total_indices += 1
 
     command = cpmmodule.params['command']
@@ -194,7 +194,7 @@ def assemble_json(cpmmodule, existing_interface):
             if ((existing_interface["iptables"][0]["eth0"][ietfstring]["entries"][x]["entry"] != commands[x]) or (is_clear == 1)):
                 if (is_changed > 0):
                     json_load = '%s,' % (json_load)
-                json_load = '%s{"entry": "%s","index": "%d"}' % (json_load, commands[x], (x+1))
+                json_load = '%s{"entry": "%s","index": "%d"}' % (json_load, commands[x], (x + 1))
                 is_changed += 1
 
     if (is_changed > 0) or (is_clear > 0):
@@ -212,7 +212,7 @@ def run_module():
         cpm_password=dict(type='str', required=True, no_log=True),
         protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
         index=dict(type='list', element='int', required=False, default=None),
-        command=dict(type='list', element='str', required=True, default=None),
+        command=dict(type='list', element='str', required=True),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),

@@ -29,7 +29,7 @@ DOCUMENTATION = """
 ---
 module: cpm_interface_config
 version_added: "2.10"
-author: 
+author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set network interface parameters in WTI OOB and PDU devices
 description:
