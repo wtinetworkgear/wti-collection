@@ -52,4 +52,4 @@ Apache-2.0
 
 Author Information
 ------------------
- - Ken Partridge (@syncpak)
+ - Ken Partridge (@wtinetworkgear)

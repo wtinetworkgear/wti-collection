@@ -35,62 +35,62 @@ short_description: Set network IPTables parameters in WTI OOB and PDU devices
 description:
     - "Set network IPTables parameters in WTI OOB and PDU devices"
 options:
-  cpm_url:
-    description:
-      - This is the URL of the WTI device to send the module.
-    required: true
-    type: str
-  cpm_username:
-    description:
-      - This is the Username of the WTI device to send the module.
-    required: true
-    type: str
-  cpm_password:
-    description:
-      - This is the Password of the WTI device to send the module.
-    required: true
-    type: str
-  use_https:
-    description:
-      - Designates to use an https connection or http connection.
-    required: false
-    type: bool
-    default: true
-  validate_certs:
-    description:
-      - If false, SSL certificates will not be validated. This should only be used
-      - on personally controlled sites using self-signed certificates.
-    required: false
-    type: bool
-    default: true
-  use_proxy:
-    description:
-      - Flag to control if the lookup will observe HTTP proxy environment variables when present.
-    required: false
-    type: bool
-    default: false
-  protocol:
-    description:
-      - The protocol that the iptables entry should be applied. 0 = ipv4, 1 = ipv6.
-    required: false
-    type: int
-    choices: [ 0, 1 ]
-  index:
-    description:
-      - Index in which command should be inserted. If not defined entry will start at position one.
-    required: false
-    type: list
-  command:
-    description:
-      - Actual iptables command to send to the WTI device.
-    required: true
-    type: list
-  clear:
-    description:
-      - Removes all the iptables for the protocol being defined before setting the newly defined entry.
-    required: false
-    type: int
-    choices: [ 0, 1 ]
+    cpm_url:
+        description:
+            - This is the URL of the WTI device to send the module.
+        type: str
+        required: true
+    cpm_username:
+        description:
+            - This is the Username of the WTI device to send the module.
+        type: str
+        required: true
+    cpm_password:
+        description:
+            - This is the Password of the WTI device to send the module.
+        type: str
+        required: true
+    use_https:
+        description:
+            - Designates to use an https connection or http connection.
+        type: bool
+        required: false
+        default: true
+    validate_certs:
+        description:
+            - If false, SSL certificates will not be validated. This should only be used
+            - on personally controlled sites using self-signed certificates.
+        type: bool
+        required: false
+        default: true
+    use_proxy:
+        description:
+            - Flag to control if the lookup will observe HTTP proxy environment variables when present.
+        type: bool
+        required: false
+        default: false
+    protocol:
+        description:
+            - The protocol that the iptables entry should be applied. 0 = ipv4, 1 = ipv6.
+        type: int
+        required: false
+        choices: [ 0, 1 ]
+    index:
+        description:
+            - Index in which command should be inserted. If not defined entry will start at position one.
+        type: list
+        required: false
+    command:
+        description:
+            - Actual iptables command to send to the WTI device.
+        type: list
+        required: true
+    clear:
+        description:
+            - Removes all the iptables for the protocol being defined before setting the newly defined entry.
+        type: int
+        required: false
+        choices: [ 0, 1 ]
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
 """

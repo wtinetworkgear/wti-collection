@@ -35,76 +35,76 @@ short_description: Set Time/Date parameters in WTI OOB and PDU devices.
 description:
     - "Set Time/Date and NTP parameters parameters in WTI OOB and PDU devices"
 options:
-  cpm_url:
-    description:
-      - This is the URL of the WTI device to send the module.
-    required: true
-    type: str
-  cpm_username:
-    description:
-      - This is the Username of the WTI device to send the module.
-    required: true
-    type: str
-  cpm_password:
-    description:
-      - This is the Password of the WTI device to send the module.
-    required: true
-    type: str
-  use_https:
-    description:
-      - Designates to use an https connection or http connection.
-    required: false
-    type: bool
-    default: true
-  validate_certs:
-    description:
-      - If false, SSL certificates will not be validated. This should only be used
-      - on personally controlled sites using self-signed certificates.
-    required: false
-    type: bool
-    default: true
-  use_proxy:
-    description:
-      - Flag to control if the lookup will observe HTTP proxy environment variables when present.
-    required: false
-    type: bool
-    default: false
-  date:
-    description:
-      - Static date in the format of two digit month, two digit day, four digit year separated by a slash symbol.
-    required: false
-    type: str
-  time:
-    description:
-      - Static time in the format of two digit hour, two digit minute, two digit second separated by a colon symbol.
-    required: false
-    type: str
-  timezone:
-    description:
-      - This is timezone that is assigned to the WTI device.
-    required: false
-    type: int
-  ntpenable:
-    description:
-      - This enables or disables the NTP client service.
-    required: false
-    type: int
-    choices: [ 0, 1 ]
-  ipv4address:
-    description:
-      - Comma separated string of up to two addresses for a primary and secondary IPv4 base NTP server.
-    required: false
-    type: str
-  ipv6address:
-    description:
-      - Comma separated string of up to two addresses for a primary and secondary IPv6 base NTP server.
-    required: false
-    type: str
-  timeout:
-    description:
-      - Set the network timeout in seconds of contacting the NTP servers, valid options can be from 1-60.
-    required: false
-    type: int
+    cpm_url:
+        description:
+            - This is the URL of the WTI device to send the module.
+        type: str
+        required: true
+    cpm_username:
+        description:
+            - This is the Username of the WTI device to send the module.
+        type: str
+        required: true
+    cpm_password:
+        description:
+            - This is the Password of the WTI device to send the module.
+        type: str
+        required: true
+    use_https:
+        description:
+            - Designates to use an https connection or http connection.
+        type: bool
+        required: false
+        default: true
+    validate_certs:
+        description:
+            - If false, SSL certificates will not be validated. This should only be used
+            - on personally controlled sites using self-signed certificates.
+        type: bool
+        required: false
+        default: true
+    use_proxy:
+        description:
+            - Flag to control if the lookup will observe HTTP proxy environment variables when present.
+        type: bool
+        required: false
+        default: false
+    date:
+        description:
+            - Static date in the format of two digit month, two digit day, four digit year separated by a slash symbol.
+        type: str
+        required: false
+    time:
+        description:
+            - Static time in the format of two digit hour, two digit minute, two digit second separated by a colon symbol.
+        type: str
+        required: false
+    timezone:
+        description:
+            - This is timezone that is assigned to the WTI device.
+        type: int
+        required: false
+    ntpenable:
+        description:
+            - This enables or disables the NTP client service.
+        type: int
+        required: false
+        choices: [ 0, 1 ]
+    ipv4address:
+        description:
+            - Comma separated string of up to two addresses for a primary and secondary IPv4 base NTP server.
+        type: str
+        required: false
+    ipv6address:
+        description:
+            - Comma separated string of up to two addresses for a primary and secondary IPv6 base NTP server.
+        type: str
+        required: false
+    timeout:
+        description:
+            - Set the network timeout in seconds of contacting the NTP servers, valid options can be from 1-60.
+        type: int
+        required: false
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
 """

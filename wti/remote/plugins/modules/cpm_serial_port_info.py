@@ -13,7 +13,7 @@
 #
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
-# Module to retrieve WTI Network IPTables Parameters from WTI OOB and PDU devices.
+# Module to retrieve WTI Serial Port Parameters from WTI OOB and PDU devices.
 # CPM remote_management
 #
 from __future__ import absolute_import, division, print_function
@@ -27,13 +27,12 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: cpm_iptables_info
-version_added: "2.10"
-author:
-    - "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Get network IPTABLES parameters from WTI OOB and PDU devices
+module: cpm_serial_port_info
+version_added: "2.9"
+author: "Western Telematic Inc. (@wtinetworkgear)"
+short_description: Get Serial port parameters in WTI OOB and PDU devices
 description:
-    - "Get network IPTABLES parameters from WTI OOB and PDU devices"
+    - "Get Serial port parameters from WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
@@ -55,40 +54,57 @@ options:
             - Designates to use an https connection or http connection.
         type: bool
         required: false
-        default: true
+        default: false
     validate_certs:
         description:
             - If false, SSL certificates will not be validated. This should only be used
             - on personally controlled sites using self-signed certificates.
         type: bool
         required: false
-        default: true
+        default: false
     use_proxy:
-        description:
-            - Flag to control if the lookup will observe HTTP proxy environment variables when present.
+        description: Flag to control if the lookup will observe HTTP proxy environment variables when present.
         type: bool
         required: false
         default: false
+    port:
+        description:
+            - This is the serial port number that is getting retrieved. It can include a single port
+            - number, multiple port numbers separated by commas, a list of port numbers, or an '*' character for all ports.
+        type: list
+        required: true
+        default: ['*']
 notes:
- - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.)
+  - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.)
 """
 
 EXAMPLES = """
-- name: Get the network IPTABLES Parameters for a WTI device.
-  cpm_interface_info:
+- name: Get the Serial Port Parameters for port 2 of a WTI device
+  cpm_serial_port_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
     use_https: true
     validate_certs: false
+    port: 2
 
-- name: Get the network IPTABLES Parameters for a WTI device.
-  cpm_interface_info:
+- name: Get the Serial Port Parameters for ports 2 and 4 of a WTI device
+  cpm_serial_port_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
-    use_https: false
+    use_https: true
     validate_certs: false
+    port: 2,4
+
+- name: Get the Serial Port Parameters for all ports of a WTI device
+  cpm_serial_port_info:
+    cpm_url: "nonexist.wti.com"
+    cpm_username: "super"
+    cpm_password: "super"
+    use_https: true
+    validate_certs: false
+    port: "*"
 """
 
 RETURN = """
@@ -97,14 +113,40 @@ data:
   returned: always
   type: complex
   contains:
-    iptables:
-      description: Current k/v pairs of IPTABLES info for the WTI device after module execution.
-      returned: always
-      type: dict
-      sample: {"iptables": [{"eth0": {"ietf-ipv4":
-              [{"clear": 0, "entries": [{"entry": "test10", "index": "1"}, {"entry": "", "index": "2" }]}],
-              "ietf-ipv6":
-              [{"clear": 0, "entries": [{"entry": "test30", "index": "1"}, {"entry": "test40", "index": "2" }]}]}}]}
+    serialports:
+      description: List of data for each serial port
+      returned: success
+      type: list
+      sample:
+        - baud: 4
+          break: 1
+          cmd: 1
+          connstatus: Free
+          echo: 1
+          handshake: 2
+          logoff: '^X'
+          mode: 1
+          parity: 3
+          port: 2
+          portname: switch
+          seq: 2
+          stopbits: 1
+          tout: 0
+
+        - baud: 3
+          break: 1
+          cmd: 1
+          connstatus: Free
+          echo: 1
+          handshake: 2
+          logoff: '^X'
+          mode: 1
+          parity: 1
+          port: 4
+          portname: router
+          seq: 2
+          stopbits: 1
+          tout: 1
 """
 
 import base64
@@ -123,8 +165,9 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        use_https=dict(type='bool', default=True),
-        validate_certs=dict(type='bool', default=True),
+        port=dict(type='list', default=['*']),
+        use_https=dict(type='bool', default=False),
+        validate_certs=dict(type='bool', default=False),
         use_proxy=dict(type='bool', default=False)
     )
 
@@ -143,7 +186,10 @@ def run_module():
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2/config/iptables" % (protocol, to_native(module.params['cpm_url'])))
+    ports = module.params['port']
+    if isinstance(ports, list):
+        ports = ','.join(to_native(x) for x in ports)
+    fullurl = ("%s%s/api/v2/config/serialports?ports=%s" % (protocol, to_native(module.params['cpm_url']), ports))
 
     try:
         response = open_url(fullurl, data=None, method='GET', validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],

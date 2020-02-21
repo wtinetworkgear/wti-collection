@@ -35,47 +35,47 @@ short_description: Get network interface parameters from WTI OOB and PDU devices
 description:
     - "Get network interface parameters from WTI OOB and PDU devices"
 options:
-  cpm_url:
-    description:
-      - This is the URL of the WTI device to send the module.
-    required: true
-    type: str
-  cpm_username:
-    description:
-      - This is the Username of the WTI device to send the module.
-    required: true
-    type: str
-  cpm_password:
-    description:
-      - This is the Password of the WTI device to send the module.
-    required: true
-    type: str
-  use_https:
-    description:
-      - Designates to use an https connection or http connection.
-    required: false
-    type: bool
-    default: true
-  validate_certs:
-    description:
-      - If false, SSL certificates will not be validated. This should only be used
-      - on personally controlled sites using self-signed certificates.
-    required: false
-    type: bool
-    default: true
-  use_proxy:
-    description:
-      - Flag to control if the lookup will observe HTTP proxy environment variables when present.
-    required: false
-    type: bool
-    default: false
-  interface:
-    description:
-      - This is the ethernet port name that is getting retrieved. It can include a single ethernet
-        port name, multiple ethernet port names separated by commas or not defined for all ports.
-    required: false
-    type: list
-    choices: [ "eth0", "eth1", "ppp0" ]
+    cpm_url:
+        description:
+            - This is the URL of the WTI device to send the module.
+        type: str
+        required: true
+    cpm_username:
+        description:
+            - This is the Username of the WTI device to send the module.
+        type: str
+        required: true
+    cpm_password:
+        description:
+            - This is the Password of the WTI device to send the module.
+        type: str
+        required: true
+    use_https:
+        description:
+            - Designates to use an https connection or http connection.
+        type: bool
+        required: false
+        default: true
+    validate_certs:
+        description:
+            - If false, SSL certificates will not be validated. This should only be used
+            - on personally controlled sites using self-signed certificates.
+        type: bool
+        required: false
+        default: true
+    use_proxy:
+        description:
+            - Flag to control if the lookup will observe HTTP proxy environment variables when present.
+        type: bool
+        required: false
+        default: false
+    interface:
+        description:
+            - This is the ethernet port name that is getting retrieved. It can include a single ethernet
+            - port name, multiple ethernet port names separated by commas or not defined for all ports.
+        type: list
+        required: false
+        choices: [ "eth0", "eth1", "ppp0" ]
 notes:
  - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.)
 """

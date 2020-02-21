@@ -2,14 +2,14 @@
 
 namespace: wti
 name: remote
-version: 1.0.0
+version: 1.0.1
 
 readme: README.md
 
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- Ken Partridge <kenp@wti.com> (@syncpak)
+- Ken Partridge <kenp@wti.com> (@wtinetworkgear)
 
 
 ### OPTIONAL but strongly recommended

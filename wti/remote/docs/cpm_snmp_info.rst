@@ -1,6 +1,6 @@
 
-cpm_interface_info -- Get network interface parameters from WTI OOB and PDU devices
-===================================================================================
+cpm_snmp_info -- Get network SNMP parameters from WTI OOB and PDU devices
+=========================================================================
 
 .. contents::
    :local:
@@ -10,7 +10,7 @@ cpm_interface_info -- Get network interface parameters from WTI OOB and PDU devi
 Synopsis
 --------
 
-Get network interface parameters from WTI OOB and PDU devices
+Get network SNMP parameters from WTI OOB and PDU devices
 
 
 
@@ -32,6 +32,12 @@ Parameters
     This is the Password of the WTI device to send the module.
 
 
+  interface (False, str, None)
+    This is the ethernet port name that is getting retrieved. It can include a single ethernet
+
+    port name, multiple ethernet port names separated by commas or not defined for all ports.
+
+
   use_https (False, bool, True)
     Designates to use an https connection or http connection.
 
@@ -44,12 +50,6 @@ Parameters
 
   use_proxy (False, bool, False)
     Flag to control if the lookup will observe HTTP proxy environment variables when present.
-
-
-  interface (False, list, None)
-    This is the ethernet port name that is getting retrieved. It can include a single ethernet
-
-    port name, multiple ethernet port names separated by commas or not defined for all ports.
 
 
 
@@ -70,7 +70,7 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: Get the network interface Parameters for a WTI device for all interfaces
+    - name: Get the network SNMP Parameters for all interfaces of a WTI device.
       cpm_interface_info:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
@@ -78,14 +78,15 @@ Examples
         use_https: true
         validate_certs: false
 
-    - name: Get the network interface Parameters for a WTI device for a specific interface
+
+    - name: Get the network SNMP Parameters for eth0 of a WTI device.
       cpm_interface_info:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
-        interface: "eth0,eth1"
         use_https: false
         validate_certs: false
+        interface: "eth0"
 
 
 
@@ -95,11 +96,8 @@ Return Values
   data (always, complex, )
     The output JSON returned from the commands sent
 
-    totalports (success, int, 1)
-      Total ethernet ports requested of the WTI device.
-
-    interface (always, dict, {'name': 'eth1', 'type': '0', 'mac_address': '00-09-9b-02-45-db', 'is_up': '0', 'is_gig': '1', 'speed': '10', 'negotiation': '0', 'ietf-ipv4': {'address': [{'ip': '10.10.10.2', 'netmask': '255.255.255.0', 'gateway': ''}], 'dhcpclient': [{'enable': 0, 'hostname': '', 'lease': -1, 'obdns': 1, 'updns': 1}]}, 'ietf-ipv6': {'address': [{'ip': '', 'netmask': '', 'gateway': ''}]}})
-      Current k/v pairs of interface info for the WTI device after module execution.
+    snmpaccess (always, dict, {'snmpaccess': [{'eth0': {'ietf-ipv4': [{'enable': 0, 'users': [{'index': '1', 'username': 'test10', 'authpriv': '1', 'authpass': 'testpass', 'authproto': '0', 'privpass': 'testpass', 'privproto': '1'}]}], 'ietf-ipv6': [{'enable': 0, 'users': [{'index': '1', 'username': 'test10', 'authpriv': '1', 'authpass': 'testpass', 'authproto': '0', 'privpass': 'testpass', 'privproto': '1'}]}]}}]})
+      Current k/v pairs of SNMP info for the WTI device after module execution.
 
 
 

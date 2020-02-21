@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # (C) 2019 Red Hat Inc.
-# Copyright (C) 2019 Western Telematic Inc.
+# Copyright (C) 2020 Western Telematic Inc.
 #
 # GNU General Public License v3.0+
 #
@@ -13,7 +13,7 @@
 #
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
-# Module to retrieve WTI Network IPTables Parameters from WTI OOB and PDU devices.
+# Module to retrieve WTI Parameters from WTI OOB and PDU devices.
 # CPM remote_management
 #
 from __future__ import absolute_import, division, print_function
@@ -27,29 +27,34 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: cpm_iptables_info
-version_added: "2.10"
-author:
-    - "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Get network IPTABLES parameters from WTI OOB and PDU devices
+module: cpm_backup
+version_added: "2.9"
+author: "Western Telematic Inc. (@wtinetworkgear)"
+short_description: Get parameters from WTI OOB and PDU devices
 description:
-    - "Get network IPTABLES parameters from WTI OOB and PDU devices"
+    - "Get parameters from WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
-            - This is the URL of the WTI device to send the module.
+            - This is the URL of the WTI device to get the parameters from.
         type: str
         required: true
     cpm_username:
         description:
-            - This is the Username of the WTI device to send the module.
+            - This is the Username of the WTI device to get the parameters from.
         type: str
         required: true
     cpm_password:
         description:
-            - This is the Password of the WTI device to send the module.
+            - This is the Password of the WTI device to get the parameters from.
         type: str
         required: true
+    cpm_path:
+        description:
+            - This is the directory path to store the WTI device configuration file.
+        type: str
+        required: false
+        default: "/tmp/"
     use_https:
         description:
             - Designates to use an https connection or http connection.
@@ -64,56 +69,65 @@ options:
         required: false
         default: true
     use_proxy:
-        description:
-            - Flag to control if the lookup will observe HTTP proxy environment variables when present.
+        description: Flag to control if the lookup will observe HTTP proxy environment variables when present.
         type: bool
         required: false
         default: false
 notes:
- - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.)
+  - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.)
 """
 
 EXAMPLES = """
-- name: Get the network IPTABLES Parameters for a WTI device.
-  cpm_interface_info:
+- name: Get the Parameters for a WTI device
+cpm_backup:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
     use_https: true
     validate_certs: false
-
-- name: Get the network IPTABLES Parameters for a WTI device.
-  cpm_interface_info:
-    cpm_url: "nonexist.wti.com"
-    cpm_username: "super"
-    cpm_password: "super"
-    use_https: false
-    validate_certs: false
 """
 
 RETURN = """
 data:
-  description: The output JSON returned from the commands sent
+  description: The XML configuration of the WTI device queried
   returned: always
   type: complex
   contains:
-    iptables:
-      description: Current k/v pairs of IPTABLES info for the WTI device after module execution.
-      returned: always
-      type: dict
-      sample: {"iptables": [{"eth0": {"ietf-ipv4":
-              [{"clear": 0, "entries": [{"entry": "test10", "index": "1"}, {"entry": "", "index": "2" }]}],
-              "ietf-ipv6":
-              [{"clear": 0, "entries": [{"entry": "test30", "index": "1"}, {"entry": "test40", "index": "2" }]}]}}]}
+    status:
+      description: List of status returns from backup operation
+      returned: success
+      type: list
+      sample:
+        - code: 0
+          savedfilename: "/tmp/wti-192-10-10-239-2020-02-13T16-05-57-xml"
+          text: "ok"
 """
 
 import base64
 import json
+import datetime
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_text, to_bytes, to_native
 from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.module_utils.urls import open_url, ConnectionError, SSLValidationError
+
+
+def get_unit_type(filedata):
+    beginsearch = filedata.find("unit_type_info=\"")
+    beginsearch = (beginsearch + 16)
+    endsearch = filedata.find("\">", beginsearch)
+    if (((endsearch == -1) | (beginsearch == -1)) | (endsearch < beginsearch) | ((endsearch - beginsearch) > 16)):
+        header = "wti"
+    else:
+        header = filedata[beginsearch:beginsearch + (endsearch - beginsearch)]
+    return (header)
+
+
+def normalize_string(filedata):
+    filedata = filedata.replace(":", "-")
+    filedata = filedata.replace(".", "-")
+    return (filedata)
 
 
 def run_module():
@@ -123,6 +137,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
+        cpm_path=dict(type='str', default="/tmp/"),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)
@@ -143,11 +158,11 @@ def run_module():
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2/config/iptables" % (protocol, to_native(module.params['cpm_url'])))
+    fullurl = ("%s%s/cgi-bin/gethtml?formWTIDownloadConfigXML.html" % (protocol, to_native(module.params['cpm_url'])))
 
     try:
         response = open_url(fullurl, data=None, method='GET', validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                            headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
+                            headers={'Content-Type': 'application/xml', 'Authorization': "Basic %s" % auth})
 
     except HTTPError as e:
         fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)
@@ -162,7 +177,25 @@ def run_module():
         fail_json = dict(msg='GET: Error connecting to {0} : {1}'.format(fullurl, to_native(e)), changed=False)
         module.fail_json(**fail_json)
 
-    result['data'] = json.loads(response.read())
+    json_string = response.read()
+
+    try:
+        f = open(normalize_string(to_native(module.params['cpm_path']) + get_unit_type(result['data']) + "-" + to_native(module.params['cpm_url']) +
+                                  "-" + datetime.datetime.now().replace(microsecond=0).isoformat() + ".xml"), "wb")
+        f.write(json_string)
+        f.close()
+#        json_string = "{\"status\": { \"code\": \"0\", \"text\": \"ok\", \"savedfilename\": \"" + normalize_string(to_native(module.params['cpm_path']) +
+#                        get_unit_type(result['data']) + "-" + to_native(module.params['cpm_url']) + "-" +
+#                        datetime.datetime.now().replace(microsecond=0).isoformat() + ".xml") + "\"  }}"
+
+        json_string = '{\"status\": { \"code\": \"0\", \"text\": \"ok\", \"savedfilename\": \"%s%s-%s-%s.xml\"  }}' \
+                      % (normalize_string(to_native(module.params['cpm_path'])), get_unit_type(result['data']),
+                         to_native(module.params['cpm_url']), datetime.datetime.now().replace(microsecond=0).isoformat())
+
+    except Exception as e:
+        json_string = "{\"status\": { \"code\": \"1\", \"text\": \"error: " + str(e) + "\", \"savedfilename\": \"\"  }}"
+
+    result['data'] = json_string
 
     module.exit_json(**result)
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # (C) 2019 Red Hat Inc.
-# Copyright (C) 2019 Western Telematic Inc.
+# Copyright (C) 2020 Western Telematic Inc.
 #
 # GNU General Public License v3.0+
 #
@@ -13,7 +13,7 @@
 #
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
-# Module to retrieve WTI Network IPTables Parameters from WTI OOB and PDU devices.
+# Module to retrieve WTI Network SNMP Parameters from WTI OOB and PDU devices.
 # CPM remote_management
 #
 from __future__ import absolute_import, division, print_function
@@ -27,13 +27,13 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: cpm_iptables_info
+module: cpm_snmp_info
 version_added: "2.10"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Get network IPTABLES parameters from WTI OOB and PDU devices
+short_description: Get network SNMP parameters from WTI OOB and PDU devices
 description:
-    - "Get network IPTABLES parameters from WTI OOB and PDU devices"
+    - "Get network SNMP parameters from WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
@@ -50,6 +50,13 @@ options:
             - This is the Password of the WTI device to send the module.
         type: str
         required: true
+    interface:
+        description:
+            - This is the ethernet port name that is getting retrieved. It can include a single ethernet
+            - port name, multiple ethernet port names separated by commas or not defined for all ports.
+        type: str
+        required: false
+        choices: [ "eth0", "eth1", "ppp0" ]
     use_https:
         description:
             - Designates to use an https connection or http connection.
@@ -74,7 +81,7 @@ notes:
 """
 
 EXAMPLES = """
-- name: Get the network IPTABLES Parameters for a WTI device.
+- name: Get the network SNMP Parameters for all interfaces of a WTI device.
   cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
@@ -82,13 +89,15 @@ EXAMPLES = """
     use_https: true
     validate_certs: false
 
-- name: Get the network IPTABLES Parameters for a WTI device.
+
+- name: Get the network SNMP Parameters for eth0 of a WTI device.
   cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
     use_https: false
     validate_certs: false
+    interface: "eth0"
 """
 
 RETURN = """
@@ -97,14 +106,16 @@ data:
   returned: always
   type: complex
   contains:
-    iptables:
-      description: Current k/v pairs of IPTABLES info for the WTI device after module execution.
+    snmpaccess:
+      description: Current k/v pairs of SNMP info for the WTI device after module execution.
       returned: always
       type: dict
-      sample: {"iptables": [{"eth0": {"ietf-ipv4":
-              [{"clear": 0, "entries": [{"entry": "test10", "index": "1"}, {"entry": "", "index": "2" }]}],
+      sample: {"snmpaccess": [{"eth0": {"ietf-ipv4":
+              [{"enable": 0, "users": [{"index": "1", "username": "test10", "authpriv": "1", "authpass": "testpass",
+                "authproto": "0", "privpass": "testpass", "privproto": "1"}]}],
               "ietf-ipv6":
-              [{"clear": 0, "entries": [{"entry": "test30", "index": "1"}, {"entry": "test40", "index": "2" }]}]}}]}
+              [{"enable": 0, "users": [{"index": "1", "username": "test10", "authpriv": "1", "authpass": "testpass",
+                "authproto": "0", "privpass": "testpass", "privproto": "1"}]}]}}]}
 """
 
 import base64
@@ -123,6 +134,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
+        interface=dict(type='str', default=None, choices=["eth0", "eth1", "ppp0"]),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)
@@ -143,7 +155,13 @@ def run_module():
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2/config/iptables" % (protocol, to_native(module.params['cpm_url'])))
+    fullurl = ("%s%s/api/v2/config/snmpaccess" % (protocol, to_native(module.params['cpm_url'])))
+    ports = module.params['interface']
+
+    if (ports is not None):
+        if isinstance(ports, list):
+            ports = ','.join(to_native(x) for x in ports)
+            fullurl = ("%s?ports=%s" % (fullurl, ports))
 
     try:
         response = open_url(fullurl, data=None, method='GET', validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],

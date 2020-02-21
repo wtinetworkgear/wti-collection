@@ -38,114 +38,114 @@ options:
   cpm_url:
     description:
       - This is the URL of the WTI device to send the module.
-    required: true
     type: str
+    required: true
   cpm_username:
     description:
       - This is the Username of the WTI device to send the module.
-    required: true
     type: str
+    required: true
   cpm_password:
     description:
       - This is the Password of the WTI device to send the module.
-    required: true
     type: str
+    required: true
   use_https:
     description:
       - Designates to use an https connection or http connection.
-    required: false
     type: bool
+    required: false
     default: true
   validate_certs:
     description:
       - If false, SSL certificates will not be validated. This should only be used
       - on personally controlled sites using self-signed certificates.
-    required: false
     type: bool
+    required: false
     default: true
   use_proxy:
     description:
       - Flag to control if the lookup will observe HTTP proxy environment variables when present.
-    required: false
     type: bool
+    required: false
     default: false
   interface:
     description:
       - This is the ethernet port name that is getting configured.
-    required: false
     type: str
+    required: false
     choices: [ "eth0", "eth1" ]
   negotiation:
     description:
       - This is the speed of the interface port being configured.
       - 0=Auto, 1=10/half, 2=10/full, 3=100/half, 4=100/full, 5=1000/half, 6=1000/full
-    required: false
     type: int
+    required: false
     choices: [ 0, 1, 2, 3, 4, 5, 6 ]
   ipv4address:
     description:
       - IPv4 format IP address for the defined interface Port.
-    required: false
     type: str
+    required: false
   ipv4netmask:
     description:
       - IPv4 format Netmask for the defined interface Port.
-    required: false
     type: str
+    required: false
   ipv4gateway:
     description:
       - IPv4 format Gateway address for the defined interface Port.
-    required: false
     type: str
+    required: false
   ipv4dhcpenable:
     description:
       - Enable IPv4 DHCP request call to obtain confufuration information.
-    required: false
     type: int
+    required: false
     choices: [ 0, 1 ]
   ipv4dhcphostname:
     description:
       - Define IPv4 DHCP Hostname.
-    required: false
     type: str
+    required: false
   ipv4dhcplease:
     description:
       - IPv4 DHCP Lease Time.
-    required: false
     type: int
+    required: false
   ipv4dhcpobdns:
     description:
       - IPv6 DHCP Obtain DNS addresses auto.
-    required: false
     type: int
+    required: false
     choices: [ 0, 1 ]
   ipv4dhcpupdns:
     description:
       - IPv4 DHCP DNS Server Update.
-    required: false
     type: int
+    required: false
     choices: [ 0, 1 ]
   ipv4dhcpdefgateway:
     description:
       - Enable or Disable this ports configuration as the default IPv4 route for the device.
-    required: false
     type: int
+    required: false
     choices: [ 0, 1 ]
   ipv6address:
     description:
       - IPv6 format IP address for the defined interface Port.
-    required: false
     type: str
+    required: false
   ipv6subnetprefix:
     description:
       - IPv6 format Subnet Prefix for the defined interface Port.
-    required: false
     type: str
+    required: false
   ipv6gateway:
     description:
       - IPv6 format Gateway address for the defined interface Port.
-    required: false
     type: str
+    required: false
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
 """
