@@ -267,7 +267,7 @@ def run_module():
     module_args = dict(
         cpm_action=dict(choices=['getuser', 'adduser', 'edituser', 'deleteuser'], required=True),
         cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=True),
+        cpm_username=dict(type='str', required=True, no_log=False),
         cpm_password=dict(type='str', required=True, no_log=True),
         user_name=dict(type='str', required=True),
         user_pass=dict(type='str', required=False, default=None, no_log=True),

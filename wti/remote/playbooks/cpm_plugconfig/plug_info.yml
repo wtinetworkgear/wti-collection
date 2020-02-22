@@ -1,5 +1,5 @@
-# ansible-playbook ./interface_info.yml -e ansible_hosts=nameofhost
-- name: Get Network Interface parameters
+# ansible-playbook ./plug_info.yml -e ansible_hosts=nameofhost
+- name: Get Plug Parameters
   hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
   collections:
      - wti.remote
@@ -12,11 +12,13 @@
   - set_fact: validate_certs=True
     when: validate_certs is undefined
 
-  - cpm_interface_info:
+  - name: run Get Plug Parameters of plug 1
+    cpm_plugconfig:
+      cpm_action: "getplugconfig"
       cpm_url: "{{ansible_host}}"
       cpm_username: "{{ansible_user}}"
       cpm_password: "{{ansible_pw}}"
-      interface: "eth0"
+      plug_id: "1"
       use_https: "{{use_https}}"
       validate_certs: "{{validate_certs}}"
 

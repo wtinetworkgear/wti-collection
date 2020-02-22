@@ -1,6 +1,6 @@
 
-cpm_backup -- Get parameters from WTI OOB and PDU devices
-=========================================================
+cpm_config_backup -- Get parameters from WTI OOB and PDU devices
+================================================================
 
 .. contents::
    :local:
@@ -245,7 +245,7 @@ Examples
 
     
     - name: Get the Parameters for a WTI device
-    cpm_backup:
+    cpm_config_backup:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"

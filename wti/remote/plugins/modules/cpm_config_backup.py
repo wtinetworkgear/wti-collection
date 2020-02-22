@@ -27,7 +27,7 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: cpm_backup
+module: cpm_config_backup
 version_added: "2.9"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get parameters from WTI OOB and PDU devices
@@ -78,13 +78,13 @@ notes:
 """
 
 EXAMPLES = """
-- name: Get the Parameters for a WTI device
-cpm_backup:
-    cpm_url: "nonexist.wti.com"
-    cpm_username: "super"
-    cpm_password: "super"
-    use_https: true
-    validate_certs: false
+-   name: Get the Parameters for a WTI device
+    cpm_config_backup:
+        cpm_url: "nonexist.wti.com"
+        cpm_username: "super"
+        cpm_password: "super"
+        use_https: true
+        validate_certs: false
 """
 
 RETURN = """
@@ -99,7 +99,7 @@ data:
       type: list
       sample:
         - code: 0
-          savedfilename: "/tmp/wti-192-10-10-239-2020-02-13T16-05-57-xml"
+          savedfilename: "/tmp/wti-192-10-10-239-2020-02-13T16-05-57.xml"
           text: "ok"
 """
 
@@ -180,16 +180,12 @@ def run_module():
     json_string = response.read()
 
     try:
-        f = open(normalize_string(to_native(module.params['cpm_path']) + get_unit_type(result['data']) + "-" + to_native(module.params['cpm_url']) +
-                                  "-" + datetime.datetime.now().replace(microsecond=0).isoformat() + ".xml"), "wb")
+        f = open(normalize_string(to_native(module.params['cpm_path'])) + get_unit_type(to_native(json_string)) + "-" + to_native(module.params['cpm_url']) +
+                 "-" + datetime.datetime.now().replace(microsecond=0).isoformat() + ".xml", "wb")
         f.write(json_string)
         f.close()
-#        json_string = "{\"status\": { \"code\": \"0\", \"text\": \"ok\", \"savedfilename\": \"" + normalize_string(to_native(module.params['cpm_path']) +
-#                        get_unit_type(result['data']) + "-" + to_native(module.params['cpm_url']) + "-" +
-#                        datetime.datetime.now().replace(microsecond=0).isoformat() + ".xml") + "\"  }}"
-
         json_string = '{\"status\": { \"code\": \"0\", \"text\": \"ok\", \"savedfilename\": \"%s%s-%s-%s.xml\"  }}' \
-                      % (normalize_string(to_native(module.params['cpm_path'])), get_unit_type(result['data']),
+                      % (normalize_string(to_native(module.params['cpm_path'])), get_unit_type(to_native(json_string)),
                          to_native(module.params['cpm_url']), datetime.datetime.now().replace(microsecond=0).isoformat())
 
     except Exception as e:
