@@ -244,13 +244,13 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: Get the Parameters for a WTI device
-    cpm_config_backup:
-        cpm_url: "nonexist.wti.com"
-        cpm_username: "super"
-        cpm_password: "super"
-        use_https: true
-        validate_certs: false
+    -   name: Get the Parameters for a WTI device
+        cpm_config_backup:
+            cpm_url: "nonexist.wti.com"
+            cpm_username: "super"
+            cpm_password: "super"
+            use_https: true
+            validate_certs: false
 
 
 
@@ -260,7 +260,7 @@ Return Values
   data (always, complex, )
     The XML configuration of the WTI device queried
 
-    status (success, list, [{'code': 0, 'savedfilename': '/tmp/wti-192-10-10-239-2020-02-13T16-05-57-xml', 'text': 'ok'}])
+    status (success, list, [{'code': 0, 'savedfilename': '/tmp/wti-192-10-10-239-2020-02-13T16-05-57.xml', 'text': 'ok'}])
       List of status returns from backup operation
 
 

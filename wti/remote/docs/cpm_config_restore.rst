@@ -248,15 +248,15 @@ Examples
 .. code-block:: yaml+jinja
 
     
-    - name: Get the Parameters for a WTI device
-      cpm_config_restore:
-        cpm_url: "nonexist.wti.com"
-        cpm_username: "super"
-        cpm_password: "super"
-        cpm_path: "/tmp/"
-        cpm_filename: "wti-192-10-10-239-2020-02-13T16-05-57-xml"
-        use_https: true
-        validate_certs: false
+    -   name: Get the Parameters for a WTI device
+        cpm_config_restore:
+            cpm_url: "nonexist.wti.com"
+            cpm_username: "super"
+            cpm_password: "super"
+            cpm_path: "/tmp/"
+            cpm_filename: "wti-192-10-10-239-2020-02-13T16-05-57-xml"
+            use_https: true
+            validate_certs: false
 
 
 
