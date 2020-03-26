@@ -203,7 +203,7 @@ def run_module():
         try:
             ifilesize = os.path.getsize(usersuppliedfilename)
             file = open(usersuppliedfilename, 'r')
-            file.seek(ifilesize-20)
+            file.seek(ifilesize - 20)
             fileread = file.read()
             if (fileread.find("TSM") >= 0):
                 localfilefamily = 1
@@ -262,7 +262,8 @@ def run_module():
 #    print("Device reports Version: %s, Family: %s\n" % (local_release_version, ("Console" if family == 1 else "Power")))
     if (localfilefamily != -1):
         if (family != localfilefamily):
-            fail_json = dict(msg='FAMILY MISMATCH: Your local file is a: %s type, the device is a %s type' % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")), changed=False)
+            fail_json = dict(msg='FAMILY MISMATCH: Your local file is a: %s type, the device is a %s type'
+                             % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")), changed=False)
             module.fail_json(**fail_json)
 
     # 2. Go online and find the latest version of the os image for this device family
@@ -307,7 +308,7 @@ def run_module():
                 if (localfilefamily == -1):
                     online_file_location = result['data']["config"]["imageurl"]
 
-                    local_filename = online_file_location[online_file_location.rfind("/")+1:]
+                    local_filename = online_file_location[online_file_location.rfind("/") + 1:]
                     local_filename = tempfile.gettempdir() + "/" + local_filename
 
                     response = requests.get(online_file_location, stream=True)
@@ -320,7 +321,8 @@ def run_module():
                     if (family == localfilefamily):
                         local_filename = usersuppliedfilename
                     else:
-                        print("FAMILY MISMATCH: Your local file is a %s type, and the device is a %s type\n\n" % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")))
+                        print("FAMILY MISMATCH: Your local file is a %s type, and the device is a %s type\n\n"
+                              % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")))
                         exit(3)
                 # SEND the file to the WTI device
                 # 3. upload new os image to WTI device
@@ -328,7 +330,8 @@ def run_module():
                 files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
 
                 try:
-                    response = requests.post(fullurl, files=files, auth=(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])), verify=(module.params['validate_certs']), stream=True)
+                    response = requests.post(fullurl, files=files, auth=(to_native(module.params['cpm_username']),
+                                             to_native(module.params['cpm_password'])), verify=(module.params['validate_certs']), stream=True)
                     result['data'] = response.json()
 
                     if (response.status_code == 200):
