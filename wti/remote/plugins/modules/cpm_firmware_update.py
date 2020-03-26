@@ -104,8 +104,8 @@ notes:
 """
 
 EXAMPLES = """
-# Upgrade the firwmare od a WTI device
-- name: Upgrade the firwmare od a WTI device
+# Upgrade the firmware of a WTI device
+- name: Upgrade the firmware of a WTI device
   cpm_firmware_update:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
@@ -114,8 +114,8 @@ EXAMPLES = """
     validate_certs: false
 
 
-# Upgrade the firwmare od a WTI device and keep the downlaod OS image after exit
-- name: Upgrade the firwmare od a WTI device and keep the downlaod OS image after exit
+# Upgrade the firmware of a WTI device and keep the download OS image after exit
+- name: Upgrade the firmware of a WTI device and keep the download OS image after exit
   cpm_firmware_update:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
