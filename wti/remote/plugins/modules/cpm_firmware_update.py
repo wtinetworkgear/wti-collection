@@ -143,8 +143,8 @@ data:
             type: list
             sample:
                 - code: 0
-                text: "ok"
-                unittimestamp: "2020-02-14T00:18:57+00:00"
+                - text: "ok"
+                - unittimestamp: "2020-02-14T00:18:57+00:00"
 """
 
 import base64
