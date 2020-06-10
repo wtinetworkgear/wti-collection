@@ -5,7 +5,3 @@ action_groups:
   - cpm_serial_port_config
   - cpm_serial_port_info
   - cpm_user
-
-action_groups_redirection:
-  cpm:
-    redirect: cpm
