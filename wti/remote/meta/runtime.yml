@@ -1,0 +1,7 @@
+action_groups:
+  cpm:
+  - cpm_plugconfig
+  - cpm_plugcontrol
+  - cpm_serial_port_config
+  - cpm_serial_port_info
+  - cpm_user
