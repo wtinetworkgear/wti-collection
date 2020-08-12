@@ -92,7 +92,7 @@ options:
         choices: [ 0, 1, 2, 3 ]
     stopbits:
         description:
-            - This is the stop bits to assign to the port, 0=1 Stop Bit, 1=2 Stop Bit.
+            - This is the stop bits to assign to the port, 1=1 Stop Bit, 2=2 Stop Bit.
         type: int
         required: false
         choices: [ 0, 1 ]
@@ -159,7 +159,7 @@ EXAMPLES = """
     portname: "RouterLabel"
     baud: "7"
     handshake: "1"
-    stopbits: "0"
+    stopbits: "1"
     parity: "0"
     mode: "0"
     cmd: "0"
@@ -270,7 +270,7 @@ def run_module():
         portname=dict(type='str', required=False, default=None),
         baud=dict(type='int', required=False, default=None, choices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
         handshake=dict(type='int', required=False, default=None, choices=[0, 1, 2, 3]),
-        stopbits=dict(type='int', required=False, default=None, choices=[0, 1]),
+        stopbits=dict(type='int', required=False, default=None, choices=[1, 2]),
         parity=dict(type='int', required=False, default=None, choices=[0, 1, 2, 3, 4, 5]),
         mode=dict(type='int', required=False, default=None, choices=[0, 1, 2, 3, 4]),
         cmd=dict(type='int', required=False, default=None, choices=[0, 1]),
