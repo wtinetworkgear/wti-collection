@@ -95,7 +95,7 @@ options:
             - This is the stop bits to assign to the port, 1=1 Stop Bit, 2=2 Stop Bit.
         type: int
         required: false
-        choices: [ 0, 1 ]
+        choices: [ 1, 2 ]
     parity:
         description:
             - This is the parity to assign to the port, 0=7-None, 1=7-Even, 2=7-Odd, 3=8-None, 4=8-Even, 5=8-Odd.
