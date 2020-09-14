@@ -1,6 +1,6 @@
 
-cpm_config_restore -- Get parameters from WTI OOB and PDU devices
-=================================================================
+cpm_config_restore -- Send operational parameters to WTI OOB and PDU devices
+============================================================================
 
 .. contents::
    :local:
@@ -10,7 +10,7 @@ cpm_config_restore -- Get parameters from WTI OOB and PDU devices
 Synopsis
 --------
 
-Get parameters from WTI OOB and PDU devices
+Send operational parameters to WTI OOB and PDU devices
 
 
 
