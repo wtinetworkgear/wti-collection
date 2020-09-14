@@ -1,4 +1,4 @@
-# ansible-playbook ./serial_port_config.yml -e ansible_hosts=nameofhost
+# ansible-playbook ./serial_ports_config.yml -e ansible_hosts=nameofhost
 - name: Set Serial Port Parameters
   hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
   collections:
