@@ -1,6 +1,6 @@
 # ansible-playbook ./firmware_upgrade.yml
 - name: Upgrade WTI Device
-  hosts: "{{hosts}}"  # pass as -e hosts=wti_demo on the commandline
+  hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
   collections:
      - wti.remote
   connection: local
