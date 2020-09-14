@@ -30,9 +30,9 @@ DOCUMENTATION = """
 module: cpm_config_restore
 version_added: "2.9"
 author: "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Get parameters from WTI OOB and PDU devices
+short_description: Send operational parameters to WTI OOB and PDU devices
 description:
-    - "Get parameters from WTI OOB and PDU devices"
+    - "Send operational parameters to WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
