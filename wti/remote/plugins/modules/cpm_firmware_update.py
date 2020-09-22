@@ -202,12 +202,12 @@ def run_module():
     if (usersuppliedfilename is not None):
         try:
             ifilesize = os.path.getsize(usersuppliedfilename)
-            file = open(usersuppliedfilename, 'r')
+            file = open(usersuppliedfilename, 'rb')
             file.seek(ifilesize - 20)
             fileread = file.read()
-            if (fileread.find("TSM") >= 0):
+            if (fileread.find(b"TSM") >= 0):
                 localfilefamily = 1
-            elif (fileread.find("VMR") >= 0):
+            elif (fileread.find(b"VMR") >= 0):
                 localfilefamily = 0
             file.close()
 #        print("User Supplied file [%s] is a %s type." %(usersuppliedfilename, ("Console" if localfilefamily == 1 else "Power")))
