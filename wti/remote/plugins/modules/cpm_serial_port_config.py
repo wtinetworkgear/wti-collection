@@ -116,7 +116,7 @@ options:
         choices: [ 0, 1 ]
     seq:
         description:
-            - This is the type of Sequence Disconnect to assign to the port, 0=Three Characters (before and after), 1=One Character Only, 2=Off
+            - This is the type of Sequence Disconnect to assign to the port, 1=Three Characters (before and after), 2=One Character Only, 3=Off
         type: int
         required: false
         choices: [ 1, 2, 3 ]
