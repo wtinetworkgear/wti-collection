@@ -82,7 +82,7 @@ options:
     assettag:
         description:
             - This is the Asset Tag to be set for the WTI OOB and PDU device.
-        type: int
+        type: str
         required: false
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.

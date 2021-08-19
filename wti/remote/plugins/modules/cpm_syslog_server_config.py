@@ -115,7 +115,6 @@ options:
             - Index of the IP block being modified.
         type: list
         required: false
-        choices: [ 1, 2, 3, 4 ]
     address:
         description:
             - Sets the IP Address to block message logging.
@@ -364,7 +363,7 @@ def run_module():
     was_changed = False
     result['data'] = json.loads(response.read())
     was_changed, payload = assemble_json(module, result['data'])
- #   result['data'] = payload
+#   result['data'] = payload
 
     if module.check_mode:
         if (payload is not None) and (len(payload) > 0):
