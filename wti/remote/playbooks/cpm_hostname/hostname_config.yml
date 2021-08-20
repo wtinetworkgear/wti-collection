@@ -1,0 +1,26 @@
+# ansible-playbook ./hostname_config.yml -e ansible_hosts=youransibledefinedhostnames
+- name: Set Hostname (Site ID), Location, Asset Tag parameters
+  hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
+  collections:
+     - wti.remote
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - set_fact: use_https=False
+    when: use_https is undefined
+  - set_fact: validate_certs=False
+    when: validate_certs is undefined
+
+  - cpm_hostname_config:
+      cpm_url: "{{ansible_host}}"
+      cpm_username: "{{ansible_user}}"
+      cpm_password: "{{ansible_pw}}"
+      hostname: "newhostname"
+      location: "newlocation"
+      assettag: "newassettag"
+
+    register: testout
+  - name: dump test output
+    debug:
+      msg: "{{ testout['data'] }}"
