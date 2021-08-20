@@ -9,3 +9,5 @@ action_groups:
   - cpm_hostname_config
   - cpm_syslog_server_info
   - cpm_syslog_server_config
+  - cpm_syslog_client_config.py
+  - cpm_syslog_client_info.py
