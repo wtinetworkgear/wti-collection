@@ -419,7 +419,7 @@ def run_module():
                 fail_json = dict(msg='POST: Error connecting to {0} : {1}'.format(fullurl, to_native(e)), changed=False)
                 module.fail_json(**fail_json)
 
-            result['data'] = json.loads(response.read())
+            result['data'] = response.read()
         else:
             result['data'] = json.loads('{"status": {"code": "-1", "text": "error with JSON and/or variables assembly"}}')
 
