@@ -11,9 +11,9 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """
-lookup: cpm_metering
+name: cpm_metering
 author: "Western Telematic Inc. (@wtinetworkgear)"
-version_added: "2.7"
+version_added: "2.7.0"
 short_description: Get Power and Current data from WTI OOB/Combo and PDU devices
 description:
     - "Get Power and Current data from WTI OOB/Combo and PDU devices"
