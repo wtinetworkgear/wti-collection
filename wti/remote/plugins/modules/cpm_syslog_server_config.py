@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_syslog_server_config
-version_added: "2.11"
+version_added: "2.11.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set network SYSLOG Server parameters in WTI OOB and PDU devices
@@ -72,9 +72,14 @@ options:
     interface:
         description:
             - The ethernet port for the SYSLOG we are defining.
-        type: str
-        required: false
-        choices: [ "eth0", "eth1", "ppp0", "qmimux0" ]
+        type: list
+        elements: str
+        choices:
+            - eth0
+            - eth1
+            - ppp0
+            - qmimux0
+        required: true
     protocol:
         description:
             - The protocol that the SYSLOG entry should be applied. 0 = ipv4, 1 = ipv6.
@@ -114,11 +119,13 @@ options:
         description:
             - Index of the IP block being modified.
         type: list
+        elements: int
         required: false
     address:
         description:
             - Sets the IP Address to block message logging.
         type: list
+        elements: str
         required: false
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
@@ -312,15 +319,15 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        interface=dict(type='str', required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
+        interface=dict(type="list", elements="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),
         enable=dict(type='int', required=False, default=None, choices=[0, 1]),
         port=dict(type='int', required=False, default=None),
         transport=dict(type='int', required=False, default=None, choices=[0, 1]),
-        secure=dict(type='int', element='str', required=False, choices=[0, 1]),
-        index=dict(type='list', element='int', required=False, default=None),
-        address=dict(type='list', element='str', required=False),
+        secure=dict(type='int', required=False, choices=[0, 1]),
+        index=dict(type='list', elements='int', required=False, default=None),
+        address=dict(type='list', elements='str', required=False),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)

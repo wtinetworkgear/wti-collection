@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_interface_config
-version_added: "2.10"
+version_added: "2.10.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set network interface parameters in WTI OOB and PDU devices
@@ -72,9 +72,14 @@ options:
   interface:
     description:
       - This is the ethernet port name that is getting configured.
-    type: str
     required: false
-    choices: [ "eth0", "eth1" ]
+    type: list
+    elements: str
+    choices:
+        - eth0
+        - eth1
+        - ppp0
+        - qmimux0
   negotiation:
     description:
       - This is the speed of the interface port being configured.
@@ -414,7 +419,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        interface=dict(type='str', default=None, choices=["eth0", "eth1"]),
+        interface=dict(type="list", elements="str", required=False, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         negotiation=dict(type='int', required=False, default=None, choices=[0, 1, 2, 3, 4, 5, 6]),
         ipv4address=dict(type='str', required=False, default=None),
         ipv4netmask=dict(type='str', required=False, default=None),

@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_snmp_config
-version_added: "2.10"
+version_added: "2.10.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set network IPTables parameters in WTI OOB and PDU devices
@@ -84,9 +84,14 @@ options:
     interface:
         description:
             - The ethernet port for the SNMP we are defining.
-        type: str
-        required: false
-        choices: [ "eth0", "eth1", "ppp0" ]
+        required: true
+        type: list
+        elements: str
+        choices:
+            - eth0
+            - eth1
+            - ppp0
+            - qmimux0
     readonly:
         description:
             - Controls the ability to change configuration parameters with SNMP.
@@ -134,36 +139,43 @@ options:
         description:
             - Index of the user being modified (V3 only).
         type: list
+        elements: int
         required: false
     username:
         description:
             - Sets the User Name for SNMPv3 access (V3 only).
         type: list
+        elements: str
         required: false
     authpriv:
         description:
             - Configures the Authentication and Privacy features for SNMPv3 communication, 0 = Auth/NoPriv, 1 = Auth/Priv (V3 only).
         type: list
+        elements: int
         required: false
     authpass:
         description:
             - Sets the Authentication Password for SNMPv3 (V3 only).
         type: list
+        elements: str
         required: false
     authproto:
         description:
             - Which authentication protocol will be used, 0 = MD5, 1 = SHA1 (V3 only).
         type: list
+        elements: int
         required: false
     privpass:
         description:
             - Sets the Privacy Password for SNMPv3 (V3 only) (V3 only).
         type: list
+        elements: str
         required: false
     privproto:
         description:
             - Which privacy protocol will be used, 0 = DES, 1 = AES128 (V3 only).
         type: list
+        elements: int
         required: false
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
@@ -502,24 +514,24 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        interface=dict(type='str', required=True, choices=["eth0", "eth1", "ppp0"]),
+        interface=dict(type="list", elements="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),
         enable=dict(type='int', required=False, default=None, choices=[0, 1]),
         version=dict(type='int', required=False, default=None, choices=[0, 1, 2]),
         readonly=dict(type='int', required=False, default=None, choices=[0, 1]),
-        systemname=dict(type='str', element='str', required=False),
-        contact=dict(type='str', element='str', required=False),
-        location=dict(type='str', element='str', required=False),
-        rocommunity=dict(type='str', element='str', required=False),
-        rwcommunity=dict(type='str', element='str', required=False),
-        index=dict(type='list', element='int', required=False, default=None),
-        username=dict(type='list', element='str', required=True),
-        authpriv=dict(type='list', element='int', required=False, default=None),
-        authproto=dict(type='list', element='int', required=False, default=None),
-        privproto=dict(type='list', element='int', required=False, default=None),
-        authpass=dict(type='list', element='str', required=False),
-        privpass=dict(type='list', element='str', required=False),
+        systemname=dict(type='str', required=False),
+        contact=dict(type='str', required=False),
+        location=dict(type='str', required=False),
+        rocommunity=dict(type='str', required=False),
+        rwcommunity=dict(type='str', required=False),
+        index=dict(type='list', elements='int', required=False, default=None),
+        username=dict(type='list', elements='str', required=False),
+        authpriv=dict(type='list', elements='int', required=False, default=None),
+        authproto=dict(type='list', elements='int', required=False, default=None),
+        privproto=dict(type='list', elements='int', required=False, default=None),
+        authpass=dict(type='list', elements='str', required=False, no_log=True),
+        privpass=dict(type='list', elements='str', required=False, no_log=True),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)

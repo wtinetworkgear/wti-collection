@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_snmp_info
-version_added: "2.10"
+version_added: "2.10.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get network SNMP parameters from WTI OOB and PDU devices
@@ -54,9 +54,14 @@ options:
         description:
             - This is the ethernet port name that is getting retrieved. It can include a single ethernet
             - port name, multiple ethernet port names separated by commas or not defined for all ports.
-        type: str
         required: false
-        choices: [ "eth0", "eth1", "ppp0" ]
+        type: list
+        elements: str
+        choices:
+            - eth0
+            - eth1
+            - ppp0
+            - qmimux0
     use_https:
         description:
             - Designates to use an https connection or http connection.
@@ -134,7 +139,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        interface=dict(type='str', default=None, choices=["eth0", "eth1", "ppp0"]),
+        interface=dict(type="list", elements="str", required=False, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)
