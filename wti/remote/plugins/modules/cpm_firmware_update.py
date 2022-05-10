@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_firmware_update
-version_added: "2.9"
+version_added: "2.9.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set Serial port parameters in WTI OOB and PDU devices
 description:
@@ -153,7 +153,12 @@ import json
 import tempfile
 import traceback
 import shutil
-import requests
+
+try:
+    import requests
+    HAS_REQUESTS_LIBRARY = True
+except ImportError:
+    HAS_REQUESTS_LIBRARY = False
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_text, to_bytes, to_native
@@ -191,6 +196,10 @@ def run_module():
     localfilefamily = -1
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
+
+    if HAS_REQUESTS_LIBRARY is False:
+        fail_json = dict(msg='IMPORT: requests import not installed', changed=False)
+        module.fail_json(**fail_json)
 
     if module.params['cpm_file'] is not None:
         usersuppliedfilename = ("%s%s" % (to_native(module.params['cpm_path']), to_native(module.params['cpm_file'])))
