@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_plugcontrol
-version_added: "2.8"
+version_added: "2.8.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get and Set Plug actions on WTI OOB and PDU power devices
 description:

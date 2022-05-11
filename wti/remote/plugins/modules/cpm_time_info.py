@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_time_info
-version_added: "2.10"
+version_added: "2.10.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get Time/Date parameters in WTI OOB and PDU devices

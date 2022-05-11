@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_hostname_info
-version_added: "2.11"
+version_added: "2.11.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get Hostname (Site ID), Location, Asset Tag parameters in WTI OOB and PDU devices

@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_iptables_config
-version_added: "2.10"
+version_added: "2.10.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set network IPTables parameters in WTI OOB and PDU devices
@@ -79,11 +79,13 @@ options:
         description:
             - Index in which command should be inserted. If not defined entry will start at position one.
         type: list
+        elements: int
         required: false
     command:
         description:
             - Actual iptables command to send to the WTI device.
         type: list
+        elements: str
         required: true
     clear:
         description:
@@ -211,8 +213,8 @@ def run_module():
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
         protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
-        index=dict(type='list', element='int', required=False, default=None),
-        command=dict(type='list', element='str', required=True),
+        index=dict(type='list', elements='int', required=False, default=None),
+        command=dict(type='list', elements='str', required=True),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),

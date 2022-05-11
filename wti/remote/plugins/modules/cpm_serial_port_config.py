@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_serial_port_config
-version_added: "2.9"
+version_added: "2.9.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set Serial port parameters in WTI OOB and PDU devices
 description:

@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_user
-version_added: "2.7"
+version_added: "2.7.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get various status and parameters from WTI OOB and PDU devices
 description:

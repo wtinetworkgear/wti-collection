@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_serial_port_action_info
-version_added: "2.9"
+version_added: "2.9.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get Serial port connection status in WTI OOB and PDU devices
 description:
@@ -72,7 +72,7 @@ options:
             - This is the serial port number that is getting retrieved. It can include a single port
             - number, multiple port numbers separated by commas, a list of port numbers, or an '*' character for all ports.
         type: list
-        required: true
+        elements: str
         default: ['*']
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.)
@@ -141,7 +141,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        port=dict(type='list', default=['*']),
+        port=dict(type='list', elements='str', default=['*']),
         use_https=dict(type='bool', default=False),
         validate_certs=dict(type='bool', default=False),
         use_proxy=dict(type='bool', default=False)

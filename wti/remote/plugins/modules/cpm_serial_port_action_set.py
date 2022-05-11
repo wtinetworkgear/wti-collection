@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_serial_port_action_set
-version_added: "2.9"
+version_added: "2.9.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set Serial port connection/disconnection commands in WTI OOB and PDU devices
 description:
@@ -76,7 +76,7 @@ options:
         description:
             - This is the port number that is getting the action performed on.
         type: int
-        required: true
+        required: false
     action:
         description:
             - This is the baud rate to assign to the port.

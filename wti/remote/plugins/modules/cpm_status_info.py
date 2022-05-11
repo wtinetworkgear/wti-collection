@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_status_info
-version_added: "2.9"
+version_added: "2.9.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get general status information from WTI OOB and PDU devices

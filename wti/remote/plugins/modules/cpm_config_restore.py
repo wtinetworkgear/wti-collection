@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_config_restore
-version_added: "2.9"
+version_added: "2.9.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Send operational parameters to WTI OOB and PDU devices
 description:

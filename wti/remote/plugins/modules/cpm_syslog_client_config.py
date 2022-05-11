@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_syslog_client_config
-version_added: "2.11"
+version_added: "2.11.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Set network SYSLOG Client parameters in WTI OOB and PDU devices
@@ -85,26 +85,31 @@ options:
         description:
             - Index of the IP block being modified.
         type: list
+        elements: int
         required: false
     address:
         description:
             - Sets the IP Address of the SYSLOG server to contact.
         type: list
+        elements: str
         required: false
     port:
         description:
             - Defines the port number used by the SYSLOG Client (1 - 65535).
         type: list
+        elements: int
         required: false
     transport:
         description:
             - Defines the transfer protocol type used by the SYSLOG Client. 0=UDP, 1=TCP;
         type: list
+        elements: int
         required: false
     secure:
         description:
             - Defines if a secure connection is used by the SYSLOG Client (TCP Transport required).
         type: list
+        elements: int
         required: false
 
 notes:
@@ -346,11 +351,11 @@ def run_module():
         cpm_password=dict(type='str', required=True, no_log=True),
         protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),
-        index=dict(type='list', element='int', required=False, default=None),
-        address=dict(type='list', element='str', required=False),
-        port=dict(type='list', element='int', required=False),
-        transport=dict(type='list', element='int', required=False),
-        secure=dict(type='list', element='int', required=False),
+        index=dict(type='list', elements='int', required=False, default=None),
+        address=dict(type='list', elements='str', required=False),
+        port=dict(type='list', elements='int', required=False),
+        transport=dict(type='list', elements='int', required=False),
+        secure=dict(type='list', elements='int', required=False),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)

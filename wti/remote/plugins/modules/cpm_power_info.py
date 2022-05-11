@@ -28,7 +28,7 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: cpm_power_info
-version_added: "2.9"
+version_added: "2.9.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get the Power Information of a WTI device
