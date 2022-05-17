@@ -85,8 +85,7 @@ options:
         description:
             - The ethernet port for the SNMP we are defining.
         required: true
-        type: list
-        elements: str
+        type: str
         choices:
             - eth0
             - eth1
@@ -395,47 +394,47 @@ def assemble_json(cpmmodule, existing_interface):
             user_load = '%s{"index": "%d"' % (user_load, (indices[x] + 1))
 
             if (usernamearray[x] is not None):
-                if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["username"] != usernamearray[x]):
+                if (existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["username"] != usernamearray[x]):
                     is_changed = True
 
                 user_load = '%s,"username": "%s"' % (user_load, usernamearray[x])
             else:
-                user_load = '%s,"username": "%s"' % (user_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["username"])
+                user_load = '%s,"username": "%s"' % (user_load, existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["username"])
 
             if (authpassarray[x] is not None):
-                if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["authpass"] != authpassarray[x]):
+                if (existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["authpass"] != authpassarray[x]):
                     is_changed = True
                 user_load = '%s,"authpass": "%s"' % (user_load, authpassarray[x])
             else:
-                user_load = '%s,"authpass": "%s"' % (user_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["authpass"])
+                user_load = '%s,"authpass": "%s"' % (user_load, existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["authpass"])
 
             if (privpassarray[x] is not None):
-                if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["privpass"] != privpassarray[x]):
+                if (existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["privpass"] != privpassarray[x]):
                     is_changed = True
                 user_load = '%s,"privpass": "%s"' % (user_load, privpassarray[x])
             else:
-                user_load = '%s,"privpass": "%s"' % (user_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["privpass"])
+                user_load = '%s,"privpass": "%s"' % (user_load, existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["privpass"])
 
             if (authpriv[x] is not None):
-                if (int(existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["authpriv"]) != int(authpriv[x])):
+                if (int(existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["authpriv"]) != int(authpriv[x])):
                     is_changed = True
                 user_load = '%s,"authpriv": "%s"' % (user_load, authpriv[x])
             else:
-                user_load = '%s,"authpriv": "%s"' % (user_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["authpriv"])
+                user_load = '%s,"authpriv": "%s"' % (user_load, existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["authpriv"])
 
             if (authproto[x] is not None):
-                if (int(existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["authproto"]) != int(authproto[x])):
+                if (int(existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["authproto"]) != int(authproto[x])):
                     is_changed = True
                 user_load = '%s,"authproto": "%s"' % (user_load, authproto[x])
             else:
-                user_load = '%s,"authproto": "%s"' % (user_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["authproto"])
+                user_load = '%s,"authproto": "%s"' % (user_load, existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["authproto"])
 
             if (privproto[x] is not None):
-                if (int(existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["privproto"]) != int(privproto[x])):
+                if (int(existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["privproto"]) != int(privproto[x])):
                     is_changed = True
                 user_load = '%s,"privproto": "%s"' % (user_load, privproto[x])
             else:
-                user_load = '%s,"privproto": "%s"' % (user_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["users"][(indices[x])]["privproto"])
+                user_load = '%s,"privproto": "%s"' % (user_load, existing_interface["snmpaccess"][ports][0][ietfstring]["users"][(indices[x])]["privproto"])
 
             user_load = '%s}' % (user_load)
             loop += 1
@@ -444,60 +443,60 @@ def assemble_json(cpmmodule, existing_interface):
         json_load = '{"snmpaccess": [{"%s": { "%s": { "clear": %d, "change": %d' % (ports, ietfstring, is_clear, is_changed)
 
     if (snmpenable is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["enable"] != snmpenable):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["enable"] != snmpenable):
             is_changed = True
         json_load = '%s, "enable": %d' % (json_load, snmpenable)
     else:
-        json_load = '%s,"enable": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["enable"])
+        json_load = '%s,"enable": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["enable"])
 
     if (snmpversion is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["version"] != snmpversion):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["version"] != snmpversion):
             is_changed = True
         json_load = '%s, "version": %d' % (json_load, snmpversion)
     else:
-        json_load = '%s,"version": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["version"])
+        json_load = '%s,"version": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["version"])
 
     if (snmpreadonly is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["readonly"] != snmpreadonly):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["readonly"] != snmpreadonly):
             is_changed = True
         json_load = '%s, "readonly": %d' % (json_load, snmpreadonly)
     else:
-        json_load = '%s,"readonly": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["readonly"])
+        json_load = '%s,"readonly": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["readonly"])
 
     if (snmpsystemname is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["systemname"] != snmpsystemname):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["systemname"] != snmpsystemname):
             is_changed = True
         json_load = '%s, "systemname": %d' % (json_load, snmpsystemname)
     else:
-        json_load = '%s,"systemname": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["systemname"])
+        json_load = '%s,"systemname": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["systemname"])
 
     if (snmpcontact is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["contact"] != snmpcontact):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["contact"] != snmpcontact):
             is_changed = True
         json_load = '%s, "contact": %d' % (json_load, snmpcontact)
     else:
-        json_load = '%s,"contact": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["contact"])
+        json_load = '%s,"contact": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["contact"])
 
     if (snmplocation is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["location"] != snmplocation):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["location"] != snmplocation):
             is_changed = True
         json_load = '%s, "location": %d' % (json_load, snmplocation)
     else:
-        json_load = '%s,"location": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["location"])
+        json_load = '%s,"location": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["location"])
 
     if (snmprocommunity is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["rocommunity"] != snmprocommunity):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["rocommunity"] != snmprocommunity):
             is_changed = True
         json_load = '%s, "rocommunity": %d' % (json_load, snmprocommunity)
     else:
-        json_load = '%s,"rocommunity": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["rocommunity"])
+        json_load = '%s,"rocommunity": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["rocommunity"])
 
     if (snmprwcommunity is not None):
-        if (existing_interface["snmpaccess"][0][ports][0][ietfstring]["rwcommunity"] != snmprwcommunity):
+        if (existing_interface["snmpaccess"][ports][0][ietfstring]["rwcommunity"] != snmprwcommunity):
             is_changed = True
         json_load = '%s, "rwcommunity": %d' % (json_load, snmprwcommunity)
     else:
-        json_load = '%s,"rwcommunity": "%s"' % (json_load, existing_interface["snmpaccess"][0][ports][0][ietfstring]["rwcommunity"])
+        json_load = '%s,"rwcommunity": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["rwcommunity"])
 
     if (len(user_load) > 0):
         json_load = '%s, "users": [ %s ]' % (json_load, user_load)
@@ -514,7 +513,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        interface=dict(type="list", elements="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
+        interface=dict(type="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),
         enable=dict(type='int', required=False, default=None, choices=[0, 1]),

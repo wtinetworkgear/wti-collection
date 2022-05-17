@@ -193,14 +193,14 @@ def assemble_json(cpmmodule, existing_interface):
 
     for x in range(0, 48):
         if (commands[x] is not None):
-            if ((existing_interface["iptables"][0]["eth0"][ietfstring]["entries"][x]["entry"] != commands[x]) or (is_clear == 1)):
+            if ((existing_interface["iptables"][ietfstring]["entries"][x]["entry"] != commands[x]) or (is_clear == 1)):
                 if (is_changed > 0):
                     json_load = '%s,' % (json_load)
                 json_load = '%s{"entry": "%s","index": "%d"}' % (json_load, commands[x], (x + 1))
                 is_changed += 1
 
     if (is_changed > 0) or (is_clear > 0):
-        json_load = '{"iptables": [{"eth0": { "%s": { "clear": %d, "entries": [ %s ]}}}]}' % (ietfstring, is_clear, json_load)
+        json_load = '{"iptables": { "%s": { "clear": %d, "entries": [ %s ]}}}' % (ietfstring, is_clear, json_load)
 
     return json_load
 
