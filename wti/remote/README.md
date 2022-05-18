@@ -7,7 +7,7 @@ This [Ansible](https://www.ansible.com/) collection provides a set of platform d
 Requirements
 ------------
 
-* Python 2.7 or 3.5+
+* Python 3.5+
 * Ansible 2.9.0 or later
 * Supported WTI firmware (DSM/CPM v6.58+, VMR 2.15+)
 * Configuration command needs a user with Administrator privileges
