@@ -1,3 +1,5 @@
+.. _cpm_interface_info_module:
+
 
 cpm_interface_info -- Get network interface parameters from WTI OOB and PDU devices
 ===================================================================================
@@ -46,6 +48,12 @@ Parameters
     Flag to control if the lookup will observe HTTP proxy environment variables when present.
 
 
+  face (False, list, None)
+    This is the ethernet port name that is getting retrieved. It can include a single ethernet
+
+    port name, multiple ethernet port names separated by commas or not defined for all ports.
+
+
   interface (False, list, None)
     This is the ethernet port name that is getting retrieved. It can include a single ethernet
 
@@ -92,14 +100,17 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    totalports (success, int, 1)
-      Total ethernet ports requested of the WTI device.
 
-    interface (always, dict, {'name': 'eth1', 'type': '0', 'mac_address': '00-09-9b-02-45-db', 'is_up': '0', 'is_gig': '1', 'speed': '10', 'negotiation': '0', 'ietf-ipv4': {'address': [{'ip': '10.10.10.2', 'netmask': '255.255.255.0', 'gateway': ''}], 'dhcpclient': [{'enable': 0, 'hostname': '', 'lease': -1, 'obdns': 1, 'updns': 1}]}, 'ietf-ipv6': {'address': [{'ip': '', 'netmask': '', 'gateway': ''}]}})
-      Current k/v pairs of interface info for the WTI device after module execution.
+  totalports (success, int, 1)
+    Total ethernet ports requested of the WTI device.
+
+
+  interface (always, dict, {'name': 'eth1', 'type': '0', 'mac_address': '00-09-9b-02-45-db', 'is_up': '0', 'is_gig': '1', 'speed': '10', 'negotiation': '0', 'ietf-ipv4': {'address': [{'ip': '10.10.10.2', 'netmask': '255.255.255.0', 'gateway': ''}], 'dhcpclient': [{'enable': 0, 'hostname': '', 'lease': -1, 'obdns': 1, 'updns': 1}]}, 'ietf-ipv6': {'address': [{'ip': '', 'netmask': '', 'gateway': ''}]}})
+    Current k/v pairs of interface info for the WTI device after module execution.
+
 
 
 
@@ -111,10 +122,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

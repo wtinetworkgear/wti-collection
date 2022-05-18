@@ -1,3 +1,5 @@
+.. _cpm_temp_info_module:
+
 
 cpm_temp_info -- Get temperature information from WTI OOB and PDU devices
 =========================================================================
@@ -85,20 +87,25 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    temperature (success, str, 76)
-      Current Temperature of the WTI device after module execution.
 
-    format (success, str, F)
-      Current Temperature format (Celsius or Fahrenheit) of the WTI device after module execution.
+  temperature (success, str, 76)
+    Current Temperature of the WTI device after module execution.
 
-    timestamp (success, str, 2020-02-24T20:54:03+00:00)
-      Current timestamp of the WTI device after module execution.
 
-    status (always, dict, {'code': '0', 'text': 'OK'})
-      Return status after module completion
+  format (success, str, F)
+    Current Temperature format (Celsius or Fahrenheit) of the WTI device after module execution.
+
+
+  timestamp (success, str, 2020-02-24T20:54:03+00:00)
+    Current timestamp of the WTI device after module execution.
+
+
+  status (always, dict, {'code': '0', 'text': 'OK'})
+    Return status after module completion
+
 
 
 
@@ -110,10 +117,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

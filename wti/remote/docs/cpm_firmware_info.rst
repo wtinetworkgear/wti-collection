@@ -1,3 +1,5 @@
+.. _cpm_firmware_info_module:
+
 
 cpm_firmware_info -- Get firmware information from WTI OOB and PDU devices
 ==========================================================================
@@ -85,20 +87,25 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    firmware (success, str, 6.60)
-      Current Firmware version of the WTI device.
 
-    family (success, str, 1)
-      Current family type (Console = 1  or Power = 0) of the WTI device.
+  firmware (success, str, 6.60)
+    Current Firmware version of the WTI device.
 
-    fips (success, str, 2020-02-24T20:54:03+00:00)
-      If WTI device is a no FIPS only device.
 
-    status (always, dict, {'code': '0', 'text': 'OK'})
-      Return status after module completion
+  family (success, str, 1)
+    Current family type (Console = 1  or Power = 0) of the WTI device.
+
+
+  fips (success, str, 2020-02-24T20:54:03+00:00)
+    If WTI device is a no FIPS only device.
+
+
+  status (always, dict, {'code': '0', 'text': 'OK'})
+    Return status after module completion
+
 
 
 
@@ -110,10 +117,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

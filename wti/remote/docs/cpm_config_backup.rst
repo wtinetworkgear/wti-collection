@@ -1,3 +1,5 @@
+.. _cpm_config_backup_module:
+
 
 cpm_config_backup -- Get parameters from WTI OOB and PDU devices
 ================================================================
@@ -47,183 +49,7 @@ Parameters
 
 
   use_proxy (False, bool, False)
-    F
-
-    l
-
-    a
-
-    g
-
-     
-
-    t
-
-    o
-
-     
-
-    c
-
-    o
-
-    n
-
-    t
-
-    r
-
-    o
-
-    l
-
-     
-
-    i
-
-    f
-
-     
-
-    t
-
-    h
-
-    e
-
-     
-
-    l
-
-    o
-
-    o
-
-    k
-
-    u
-
-    p
-
-     
-
-    w
-
-    i
-
-    l
-
-    l
-
-     
-
-    o
-
-    b
-
-    s
-
-    e
-
-    r
-
-    v
-
-    e
-
-     
-
-    H
-
-    T
-
-    T
-
-    P
-
-     
-
-    p
-
-    r
-
-    o
-
-    x
-
-    y
-
-     
-
-    e
-
-    n
-
-    v
-
-    i
-
-    r
-
-    o
-
-    n
-
-    m
-
-    e
-
-    n
-
-    t
-
-     
-
-    v
-
-    a
-
-    r
-
-    i
-
-    a
-
-    b
-
-    l
-
-    e
-
-    s
-
-     
-
-    w
-
-    h
-
-    e
-
-    n
-
-     
-
-    p
-
-    r
-
-    e
-
-    s
-
-    e
-
-    n
-
-    t
-
-    .
+    Flag to control if the lookup will observe HTTP proxy environment variables when present.
 
 
 
@@ -257,11 +83,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The XML configuration of the WTI device queried
+data (always, complex, )
+  The XML configuration of the WTI device queried
 
-    status (success, list, [{'code': 0, 'savedfilename': '/tmp/wti-192-10-10-239-2020-02-13T16-05-57.xml', 'text': 'ok'}])
-      List of status returns from backup operation
+
+  status (success, list, [{'code': 0, 'savedfilename': '/tmp/wti-192-10-10-239-2020-02-13T16-05-57.xml', 'text': 'ok'}])
+    List of status returns from backup operation
+
 
 
 
@@ -273,54 +101,15 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 
 Authors
 ~~~~~~~
 
-- W
-- e
-- s
-- t
-- e
-- r
-- n
--  
-- T
-- e
-- l
-- e
-- m
-- a
-- t
-- i
-- c
--  
-- I
-- n
-- c
-- .
--  
-- (
-- @
-- w
-- t
-- i
-- n
-- e
-- t
-- w
-- o
-- r
-- k
-- g
-- e
-- a
-- r
-- )
+- Western Telematic Inc. (@wtinetworkgear)
 

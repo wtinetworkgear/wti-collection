@@ -1,3 +1,5 @@
+.. _cpm_syslog_server_config_module:
+
 
 cpm_syslog_server_config -- Set network SYSLOG Server parameters in WTI OOB and PDU devices
 ===========================================================================================
@@ -46,7 +48,7 @@ Parameters
     Flag to control if the lookup will observe HTTP proxy environment variables when present.
 
 
-  interface (False, str, None)
+  interface (True, list, None)
     The ethernet port for the SYSLOG we are defining.
 
 
@@ -141,11 +143,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    syslogserver (always, dict, {'syslogserver': {'eth0': [{'ietf-ipv4': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}, 'ietf-ipv6': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}}]}})
-      Current k/v pairs of interface info for the WTI device after module execution.
+
+  syslogserver (always, dict, {'syslogserver': {'eth0': [{'ietf-ipv4': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}, 'ietf-ipv6': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}}]}})
+    Current k/v pairs of interface info for the WTI device after module execution.
+
 
 
 
@@ -157,10 +161,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

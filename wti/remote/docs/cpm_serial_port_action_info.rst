@@ -1,3 +1,5 @@
+.. _cpm_serial_port_action_info_module:
+
 
 cpm_serial_port_action_info -- Get Serial port connection status in WTI OOB and PDU devices
 ===========================================================================================
@@ -43,186 +45,10 @@ Parameters
 
 
   use_proxy (False, bool, False)
-    F
+    Flag to control if the lookup will observe HTTP proxy environment variables when present.
 
-    l
 
-    a
-
-    g
-
-     
-
-    t
-
-    o
-
-     
-
-    c
-
-    o
-
-    n
-
-    t
-
-    r
-
-    o
-
-    l
-
-     
-
-    i
-
-    f
-
-     
-
-    t
-
-    h
-
-    e
-
-     
-
-    l
-
-    o
-
-    o
-
-    k
-
-    u
-
-    p
-
-     
-
-    w
-
-    i
-
-    l
-
-    l
-
-     
-
-    o
-
-    b
-
-    s
-
-    e
-
-    r
-
-    v
-
-    e
-
-     
-
-    H
-
-    T
-
-    T
-
-    P
-
-     
-
-    p
-
-    r
-
-    o
-
-    x
-
-    y
-
-     
-
-    e
-
-    n
-
-    v
-
-    i
-
-    r
-
-    o
-
-    n
-
-    m
-
-    e
-
-    n
-
-    t
-
-     
-
-    v
-
-    a
-
-    r
-
-    i
-
-    a
-
-    b
-
-    l
-
-    e
-
-    s
-
-     
-
-    w
-
-    h
-
-    e
-
-    n
-
-     
-
-    p
-
-    r
-
-    e
-
-    s
-
-    e
-
-    n
-
-    t
-
-    .
-
-
-  port (True, list, ['*'])
+  port (optional, list, ['*'])
     This is the serial port number that is getting retrieved. It can include a single port
 
     number, multiple port numbers separated by commas, a list of port numbers, or an '*' character for all ports.
@@ -278,11 +104,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    ports (success, list, [{'port': 2, 'connstatus': 'Free'}, {'port': 4, 'connstatus': ' C-06'}])
-      List of connection status for each serial port
+
+  ports (success, list, [{'port': 2, 'connstatus': 'Free'}, {'port': 4, 'connstatus': ' C-06'}])
+    List of connection status for each serial port
+
 
 
 
@@ -294,54 +122,15 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 
 Authors
 ~~~~~~~
 
-- W
-- e
-- s
-- t
-- e
-- r
-- n
--  
-- T
-- e
-- l
-- e
-- m
-- a
-- t
-- i
-- c
--  
-- I
-- n
-- c
-- .
--  
-- (
-- @
-- w
-- t
-- i
-- n
-- e
-- t
-- w
-- o
-- r
-- k
-- g
-- e
-- a
-- r
-- )
+- Western Telematic Inc. (@wtinetworkgear)
 

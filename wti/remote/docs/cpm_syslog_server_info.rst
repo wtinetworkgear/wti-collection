@@ -1,3 +1,5 @@
+.. _cpm_syslog_server_info_module:
+
 
 cpm_syslog_server_info -- Get network SYSLOG Server parameters from WTI OOB and PDU devices
 ===========================================================================================
@@ -32,7 +34,7 @@ Parameters
     This is the Password of the WTI device to send the module.
 
 
-  interface (False, str, None)
+  interface (False, list, None)
     This is the ethernet port name that is getting retrieved. It can include a single ethernet
 
     port name, multiple ethernet port names separated by commas or not defined for all ports.
@@ -93,11 +95,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    syslogserver (always, dict, {'syslogserver': {'eth0': [{'ietf-ipv4': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}, 'ietf-ipv6': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}}]}})
-      Current k/v pairs of SYSLOG Server info for the WTI device after module execution.
+
+  syslogserver (always, dict, {'syslogserver': {'eth0': [{'ietf-ipv4': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}, 'ietf-ipv6': {'block': [{'address': '', 'index': '1'}, {'address': '', 'index': '2'}, {'address': '', 'index': '3'}, {'address': '', 'index': '4'}], 'enable': 0, 'port': '514', 'secure': '0', 'transport': '0'}}]}})
+    Current k/v pairs of SYSLOG Server info for the WTI device after module execution.
+
 
 
 
@@ -109,10 +113,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

@@ -1,3 +1,5 @@
+.. _cpm_time_info_module:
+
 
 cpm_time_info -- Get Time/Date parameters in WTI OOB and PDU devices
 ====================================================================
@@ -85,20 +87,25 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    date (success, str, 11/14/2019)
-      Current Date of the WTI device after module execution.
 
-    time (success, str, 12:12:00)
-      Current Time of the WTI device after module execution.
+  date (success, str, 11/14/2019)
+    Current Date of the WTI device after module execution.
 
-    timezone (success, int, 5)
-      Current Timezone of the WTI device after module execution.
 
-    ntp (always, dict, {'enable': '0', 'ietf-ipv4': {'address': [{'primary': '192.168.0.169', 'secondary': '12.34.56.78'}]}, 'ietf-ipv6': {'address': [{'primary': '', 'secondary': ''}]}, 'timeout': '4'})
-      Current k/v pairs of ntp info of the WTI device after module execution.
+  time (success, str, 12:12:00)
+    Current Time of the WTI device after module execution.
+
+
+  timezone (success, int, 5)
+    Current Timezone of the WTI device after module execution.
+
+
+  ntp (always, dict, {'enable': '0', 'ietf-ipv4': {'address': [{'primary': '192.168.0.169', 'secondary': '12.34.56.78'}]}, 'ietf-ipv6': {'address': [{'primary': '', 'secondary': ''}]}, 'timeout': '4'})
+    Current k/v pairs of ntp info of the WTI device after module execution.
+
 
 
 
@@ -110,10 +117,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

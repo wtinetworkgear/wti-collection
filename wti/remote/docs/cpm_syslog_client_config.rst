@@ -1,3 +1,5 @@
+.. _cpm_syslog_client_config_module:
+
 
 cpm_syslog_client_config -- Set network SYSLOG Client parameters in WTI OOB and PDU devices
 ===========================================================================================
@@ -142,11 +144,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    syslogclient (always, dict, {'syslogclient': {'ietf-ipv4': {'clients': [{'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '1'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '2'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '3'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '4'}]}, 'ietf-ipv6': {'clients': [{'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '1'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '2'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '3'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '4'}]}}})
-      Current k/v pairs of interface info for the WTI device after module execution.
+
+  syslogclient (always, dict, {'syslogclient': {'ietf-ipv4': {'clients': [{'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '1'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '2'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '3'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '4'}]}, 'ietf-ipv6': {'clients': [{'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '1'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '2'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '3'}, {'address': '', 'port': '514', 'transport': '0', 'secure': '0', 'index': '4'}]}}})
+    Current k/v pairs of interface info for the WTI device after module execution.
+
 
 
 
@@ -158,10 +162,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

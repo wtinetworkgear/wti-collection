@@ -1,3 +1,5 @@
+.. _cpm_iptables_info_module:
+
 
 cpm_iptables_info -- Get network IPTABLES parameters from WTI OOB and PDU devices
 =================================================================================
@@ -85,11 +87,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    iptables (always, dict, {'iptables': [{'eth0': {'ietf-ipv4': [{'clear': 0, 'entries': [{'entry': 'test10', 'index': '1'}, {'entry': '', 'index': '2'}]}], 'ietf-ipv6': [{'clear': 0, 'entries': [{'entry': 'test30', 'index': '1'}, {'entry': 'test40', 'index': '2'}]}]}}]})
-      Current k/v pairs of IPTABLES info for the WTI device after module execution.
+
+  iptables (always, dict, {'iptables': [{'eth0': {'ietf-ipv4': [{'clear': 0, 'entries': [{'entry': 'test10', 'index': '1'}, {'entry': '', 'index': '2'}]}], 'ietf-ipv6': [{'clear': 0, 'entries': [{'entry': 'test30', 'index': '1'}, {'entry': 'test40', 'index': '2'}]}]}}]})
+    Current k/v pairs of IPTABLES info for the WTI device after module execution.
+
 
 
 
@@ -101,10 +105,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

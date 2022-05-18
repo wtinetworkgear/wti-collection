@@ -1,3 +1,5 @@
+.. _cpm_power_info_module:
+
 
 cpm_power_info -- Get the Power Information of a WTI device
 ===========================================================
@@ -95,38 +97,49 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    timestamp (success, str, 2020-02-24T20:54:03+00:00)
-      Current timestamp of the WTI device after module execution.
 
-    powerunit (success, str, 1)
-      Identifies if the WTI device is a power type device.
+  timestamp (success, str, 2020-02-24T20:54:03+00:00)
+    Current timestamp of the WTI device after module execution.
 
-    outletmetering (success, str, 1)
-      Identifies if the WTI device has Poiwer Outlet metering.
 
-    ats (success, str, 1)
-      Identifies if the WTI device is an ATS type of power device.
+  powerunit (success, str, 1)
+    Identifies if the WTI device is a power type device.
 
-    plugcount (success, str, 8)
-      Current outlet plug count of the WTI device after module execution.
 
-    powerfactor (success, str, 100)
-      Power factor of the WTI device after module execution.
+  outletmetering (success, str, 1)
+    Identifies if the WTI device has Poiwer Outlet metering.
 
-    powereff (success, str, 100)
-      Power efficiency of the WTI device after module execution.
 
-    powerdatacount (success, str, 1)
-      Total powerdata samples returned after module execution.
+  ats (success, str, 1)
+    Identifies if the WTI device is an ATS type of power device.
 
-    powerdata (success, dict, [{'timestamp': '2020-02-24T21:45:18+00:00', 'branch1': [{'voltage1': '118.00', 'current1': '0.00', 'current2': '0.00', 'current3': '0.00', 'current4': '0.00', 'current5': '0.00', 'current6': '0.00', 'current7': '0.00', 'current8': '0.00'}]}])
-      Power data of the WTI device after module execution.
 
-    status (always, dict, {'code': '0', 'text': 'OK'})
-      Return status after module completion
+  plugcount (success, str, 8)
+    Current outlet plug count of the WTI device after module execution.
+
+
+  powerfactor (success, str, 100)
+    Power factor of the WTI device after module execution.
+
+
+  powereff (success, str, 100)
+    Power efficiency of the WTI device after module execution.
+
+
+  powerdatacount (success, str, 1)
+    Total powerdata samples returned after module execution.
+
+
+  powerdata (success, dict, [{'timestamp': '2020-02-24T21:45:18+00:00', 'branch1': [{'voltage1': '118.00', 'current1': '0.00', 'current2': '0.00', 'current3': '0.00', 'current4': '0.00', 'current5': '0.00', 'current6': '0.00', 'current7': '0.00', 'current8': '0.00'}]}])
+    Power data of the WTI device after module execution.
+
+
+  status (always, dict, {'code': '0', 'text': 'OK'})
+    Return status after module completion
+
 
 
 
@@ -138,10 +151,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

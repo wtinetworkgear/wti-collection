@@ -1,3 +1,5 @@
+.. _cpm_iptables_config_module:
+
 
 cpm_iptables_config -- Set network IPTables parameters in WTI OOB and PDU devices
 =================================================================================
@@ -110,11 +112,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    iptables (always, dict, [{'eth0': {'ietf-ipv4': {'clear': 1, 'entries': [{'entry': 'iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT', 'index': '1'}, {'entry': 'iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT', 'index': '2'}]}}}])
-      Current k/v pairs of interface info for the WTI device after module execution.
+
+  iptables (always, dict, [{'eth0': {'ietf-ipv4': {'clear': 1, 'entries': [{'entry': 'iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT', 'index': '1'}, {'entry': 'iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT', 'index': '2'}]}}}])
+    Current k/v pairs of interface info for the WTI device after module execution.
+
 
 
 
@@ -126,10 +130,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

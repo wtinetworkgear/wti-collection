@@ -1,3 +1,5 @@
+.. _cpm_snmp_config_module:
+
 
 cpm_snmp_config -- Set network IPTables parameters in WTI OOB and PDU devices
 =============================================================================
@@ -54,7 +56,7 @@ Parameters
     The activates SNMP polling for the specified interface and protocol.
 
 
-  interface (False, str, None)
+  interface (True, str, None)
     The ethernet port for the SNMP we are defining.
 
 
@@ -189,11 +191,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    snmpaccess (always, dict, [{'eth0': {'ietf-ipv4': {'clear': 1, 'enable': 0, 'readonly': 0, 'version': 0, 'users': [{'username': 'username1', 'authpass': 'testpass', 'authpriv': '1', 'authproto': '0', 'privpass': 'privpass1', 'privproto': '0', 'index': '1'}]}}}])
-      Current k/v pairs of interface info for the WTI device after module execution.
+
+  snmpaccess (always, dict, [{'eth0': {'ietf-ipv4': {'clear': 1, 'enable': 0, 'readonly': 0, 'version': 0, 'users': [{'username': 'username1', 'authpass': 'testpass', 'authpriv': '1', 'authproto': '0', 'privpass': 'privpass1', 'privproto': '0', 'index': '1'}]}}}])
+    Current k/v pairs of interface info for the WTI device after module execution.
+
 
 
 
@@ -205,10 +209,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

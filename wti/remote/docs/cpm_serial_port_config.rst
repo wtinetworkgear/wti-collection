@@ -1,3 +1,5 @@
+.. _cpm_serial_port_config_module:
+
 
 cpm_serial_port_config -- Set Serial port parameters in WTI OOB and PDU devices
 ===============================================================================
@@ -81,7 +83,7 @@ Parameters
 
 
   seq (False, int, None)
-    This is the type of Sequence Disconnect to assign to the port, 0=Three Characters (before and after), 1=One Character Only, 2=Off
+    This is the type of Sequence Disconnect to assign to the port, 1=Three Characters (before and after), 2=One Character Only, 3=Off
 
 
   tout (False, int, None)
@@ -89,7 +91,7 @@ Parameters
 
 
   echo (False, bool, None)
-    This is the command echo parameter to assign to the port, 0=Off, 1=On
+    -This is the command echo parameter to assign to the port, 0=Off, 1=On
 
 
   break_allow (False, bool, None)
@@ -132,7 +134,7 @@ Examples
         portname: "RouterLabel"
         baud: "7"
         handshake: "1"
-        stopbits: "0"
+        stopbits: "1"
         parity: "0"
         mode: "0"
         cmd: "0"
@@ -159,8 +161,9 @@ Examples
 Return Values
 -------------
 
-  data (always, str, )
-    The output JSON returned from the commands sent
+data (always, str, )
+  The output JSON returned from the commands sent
+
 
 
 
@@ -171,54 +174,15 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 
 Authors
 ~~~~~~~
 
-- W
-- e
-- s
-- t
-- e
-- r
-- n
--  
-- T
-- e
-- l
-- e
-- m
-- a
-- t
-- i
-- c
--  
-- I
-- n
-- c
-- .
--  
-- (
-- @
-- w
-- t
-- i
-- n
-- e
-- t
-- w
-- o
-- r
-- k
-- g
-- e
-- a
-- r
-- )
+- Western Telematic Inc. (@wtinetworkgear)
 

@@ -1,3 +1,5 @@
+.. _cpm_serial_port_info_module:
+
 
 cpm_serial_port_info -- Get Serial port parameters in WTI OOB and PDU devices
 =============================================================================
@@ -46,7 +48,7 @@ Parameters
     Flag to control if the lookup will observe HTTP proxy environment variables when present.
 
 
-  port (True, list, ['*'])
+  port (False, list, ['*'])
     This is the serial port number that is getting retrieved. It can include a single port
 
     number, multiple port numbers separated by commas, a list of port numbers, or an '*' character for all ports.
@@ -102,11 +104,13 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    serialports (success, list, [{'baud': 4, 'break': 1, 'cmd': 1, 'connstatus': 'Free', 'echo': 1, 'handshake': 2, 'logoff': '^X', 'mode': 1, 'parity': 3, 'port': 2, 'portname': 'switch', 'seq': 2, 'stopbits': 1, 'tout': 0}, {'baud': 3, 'break': 1, 'cmd': 1, 'connstatus': 'Free', 'echo': 1, 'handshake': 2, 'logoff': '^X', 'mode': 1, 'parity': 1, 'port': 4, 'portname': 'router', 'seq': 2, 'stopbits': 1, 'tout': 1}])
-      List of data for each serial port
+
+  serialports (success, list, [{'baud': 4, 'break': 1, 'cmd': 1, 'connstatus': 'Free', 'echo': 1, 'handshake': 2, 'logoff': '^X', 'mode': 1, 'parity': 3, 'port': 2, 'portname': 'switch', 'seq': 2, 'stopbits': 1, 'tout': 0}, {'baud': 3, 'break': 1, 'cmd': 1, 'connstatus': 'Free', 'echo': 1, 'handshake': 2, 'logoff': '^X', 'mode': 1, 'parity': 1, 'port': 4, 'portname': 'router', 'seq': 2, 'stopbits': 1, 'tout': 1}])
+    List of data for each serial port
+
 
 
 
@@ -118,54 +122,15 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 
 Authors
 ~~~~~~~
 
-- W
-- e
-- s
-- t
-- e
-- r
-- n
--  
-- T
-- e
-- l
-- e
-- m
-- a
-- t
-- i
-- c
--  
-- I
-- n
-- c
-- .
--  
-- (
-- @
-- w
-- t
-- i
-- n
-- e
-- t
-- w
-- o
-- r
-- k
-- g
-- e
-- a
-- r
-- )
+- Western Telematic Inc. (@wtinetworkgear)
 

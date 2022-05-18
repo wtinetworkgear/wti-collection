@@ -1,3 +1,5 @@
+.. _cpm_alarm_info_module:
+
 
 cpm_alarm_info -- Get alarm information from WTI OOB and PDU devices
 ====================================================================
@@ -85,14 +87,17 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    alarms (success, dict, [{'name': 'OVER CURRENT (INITIAL)', 'status': '0'}, {'name': 'OVER CURRENT (CRITICAL)', 'status': '0'}, {'name': 'OVER TEMPERATURE (INITIAL)', 'status': '0'}])
-      Current alarm status of the WTI device after module execution.
 
-    status (always, dict, {'code': '0', 'text': 'OK'})
-      Return status after module completion
+  alarms (success, dict, [{'name': 'OVER CURRENT (INITIAL)', 'status': '0'}, {'name': 'OVER CURRENT (CRITICAL)', 'status': '0'}, {'name': 'OVER TEMPERATURE (INITIAL)', 'status': '0'}])
+    Current alarm status of the WTI device after module execution.
+
+
+  status (always, dict, {'code': '0', 'text': 'OK'})
+    Return status after module completion
+
 
 
 
@@ -104,10 +109,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 

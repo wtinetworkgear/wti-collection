@@ -1,3 +1,5 @@
+.. _cpm_hostname_info_module:
+
 
 cpm_hostname_info -- Get Hostname (Site ID), Location, Asset Tag parameters in WTI OOB and PDU devices
 ======================================================================================================
@@ -85,20 +87,25 @@ Examples
 Return Values
 -------------
 
-  data (always, complex, )
-    The output JSON returned from the commands sent
+data (always, complex, )
+  The output JSON returned from the commands sent
 
-    timestamp (success, str, 2021-08-17T21:33:50+00:00)
-      Current timestamp of the WTI device after module execution.
 
-    hostname (success, str, myhostname)
-      Current Hostname (Site-ID) of the WTI device after module execution.
+  timestamp (success, str, 2021-08-17T21:33:50+00:00)
+    Current timestamp of the WTI device after module execution.
 
-    location (success, int, Irvine)
-      Current Location of the WTI device after module execution.
 
-    assettag (success, int, irvine92395)
-      Current Asset Tag of the WTI device after module execution.
+  hostname (success, str, myhostname)
+    Current Hostname (Site-ID) of the WTI device after module execution.
+
+
+  location (success, int, Irvine)
+    Current Location of the WTI device after module execution.
+
+
+  assettag (success, int, irvine92395)
+    Current Asset Tag of the WTI device after module execution.
+
 
 
 
@@ -110,10 +117,10 @@ Status
 
 
 
-- This  is not guaranteed to have a backwards compatible interface. *[preview]*
+- This module is not guaranteed to have a backwards compatible interface. *[preview]*
 
 
-- This  is maintained by community.
+- This module is maintained by community.
 
 
 
