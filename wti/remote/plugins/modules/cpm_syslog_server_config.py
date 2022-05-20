@@ -72,8 +72,7 @@ options:
     interface:
         description:
             - The ethernet port for the SYSLOG we are defining.
-        type: list
-        elements: str
+        type: str
         choices:
             - eth0
             - eth1
@@ -319,7 +318,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        interface=dict(type="list", elements="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
+        interface=dict(type="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),
         enable=dict(type='int', required=False, default=None, choices=[0, 1]),
