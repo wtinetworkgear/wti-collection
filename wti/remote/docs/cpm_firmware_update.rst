@@ -1,7 +1,7 @@
 .. _cpm_firmware_update_module:
 
 
-cpm_firmware_update -- Set Serial port parameters in WTI OOB and PDU devices
+cpm_firmware_update -- Update firmware in WTI OOB and PDU devices
 ============================================================================
 
 .. contents::
@@ -12,7 +12,7 @@ cpm_firmware_update -- Set Serial port parameters in WTI OOB and PDU devices
 Synopsis
 --------
 
-Set Serial port parameters in WTI OOB and PDU devices
+Update firmware in WTI OOB and PDU devices
 
 
 
