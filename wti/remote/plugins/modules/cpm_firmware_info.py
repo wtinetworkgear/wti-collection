@@ -107,11 +107,6 @@ data:
             returned: success
             type: str
             sample: "1"
-        fips:
-            description: If WTI device is a no FIPS only device.
-            returned: success
-            type: str
-            sample: "2020-02-24T20:54:03+00:00"
         status:
             description: Return status after module completion
             returned: always

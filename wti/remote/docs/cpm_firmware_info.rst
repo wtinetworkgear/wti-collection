@@ -99,10 +99,6 @@ data (always, complex, )
     Current family type (Console = 1  or Power = 0) of the WTI device.
 
 
-  fips (success, str, 2020-02-24T20:54:03+00:00)
-    If WTI device is a no FIPS only device.
-
-
   status (always, dict, {'code': '0', 'text': 'OK'})
     Return status after module completion
 

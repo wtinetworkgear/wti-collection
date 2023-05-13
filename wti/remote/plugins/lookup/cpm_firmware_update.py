@@ -184,7 +184,6 @@ def run_module():
     )
 
     family = None
-    fips = None
     online_file_location = None
     usersuppliedfilename = None
     forceupgrade = False
@@ -223,7 +222,7 @@ def run_module():
     else:
         protocol = "http://"
 
-    # 1. Get the Version and fips support of the WTI device
+    # 1. Get the Version of the WTI device
     fullurl = ("%s%s/api/v2/status/firmware" % (protocol, to_native(module.params['cpm_url'])))
     method = 'GET'
     try:
@@ -252,13 +251,6 @@ def run_module():
     except Exception as e:
         family = 1
 
-    try:
-        fips = int(result['data']["config"]["fips"])
-        if (fips == 0):
-            fips = 2  # get me the no fips or merged code
-    except Exception as ex:
-        fips = 1
-
 #    print("Device reports Version: %s, Family: %s\n" % (local_release_version, ("Console" if family == 1 else "Power")))
     if (localfilefamily != -1):
         if (family != localfilefamily):
@@ -269,8 +261,6 @@ def run_module():
     # 2. Go online and find the latest version of the os image for this device family
     if (localfilefamily == -1):
         fullurl = ("https://my.wti.com/update/version.aspx?fam=%s" % (family))
-        if (fips is not None):
-            fullurl = ("%s&fipsonly=%d" % (fullurl, fips))
 
         method = 'GET'
         try:
