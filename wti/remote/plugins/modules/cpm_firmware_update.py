@@ -270,7 +270,7 @@ def run_module():
     # 2. Go online and find the latest version of the os image for this device family
     if (localfilefamily == -1):
         fullurl = ("https://my.wti.com/update/version.aspx?fam=%s" % (family))
- 
+
         method = 'GET'
         try:
             response = open_url(fullurl, data=None, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],

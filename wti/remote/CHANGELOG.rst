@@ -5,7 +5,7 @@ WTI Collection Release Notes
 .. contents:: Topics
 
 
-v1.0.4
+v1.0.5
 ======
 
 Major Changes
@@ -13,11 +13,11 @@ Major Changes
 
 Minor Changes
 -------------
-Sanity test changes as requested by RedHat
+Removed fips flag type from firmware upgrades, no longer needed
 
 Bugfixes
 --------
-Modified syslog and snmp config to match the JSON schema of new WTI devices
+
 
 Documentation Changes
 ---------------------

@@ -212,7 +212,7 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        protocol=dict(type='int', required=False, default=0, choices=[0, 1]),
+        protocol=dict(type='int', required=False, default=None, choices=[0, 1]),
         index=dict(type='list', elements='int', required=False, default=None),
         command=dict(type='list', elements='str', required=True),
         clear=dict(type='int', required=False, default=None, choices=[0, 1]),

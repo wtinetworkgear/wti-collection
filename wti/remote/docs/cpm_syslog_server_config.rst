@@ -52,7 +52,7 @@ Parameters
     The ethernet port for the SYSLOG we are defining.
 
 
-  protocol (False, int, None)
+  protocol (False, int, 0)
     The protocol that the SYSLOG entry should be applied. 0 = ipv4, 1 = ipv6.
 
 
