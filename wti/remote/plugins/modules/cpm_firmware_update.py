@@ -30,9 +30,9 @@ DOCUMENTATION = """
 module: cpm_firmware_update
 version_added: "2.9.0"
 author: "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Set Serial port parameters in WTI OOB and PDU devices
+short_description: Check firmware version and upgrade for WTI OOB and PDU devices
 description:
-    - "Set Serial port parameters in WTI OOB and PDU devices"
+    - "Check firmware version and upgrade for WTI OOB and PDU devices. Can check for new firmware file online and locally."
 options:
     cpm_url:
         description:
