@@ -91,7 +91,7 @@ notes:
 EXAMPLES = """
 # Set Hostname, Location and Site-ID variables of a WTI device
 - name: Set known fixed hostname variables of a WTI device
-  cpm_time_config:
+  cpm_hostname_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -103,7 +103,7 @@ EXAMPLES = """
 
 # Set the Hostname variable of a WTI device
 - name: Set the Hostname of a WTI device
-  cpm_time_config:
+  cpm_hostname_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
