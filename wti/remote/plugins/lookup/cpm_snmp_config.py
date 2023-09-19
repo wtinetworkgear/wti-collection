@@ -31,9 +31,9 @@ module: cpm_snmp_config
 version_added: "2.10.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Set network IPTables parameters in WTI OOB and PDU devices
+short_description: Set network SNMP parameters in WTI OOB and PDU devices
 description:
-    - "Set network IPTables parameters in WTI OOB and PDU devices"
+    - "Set network SNMP parameters in WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
