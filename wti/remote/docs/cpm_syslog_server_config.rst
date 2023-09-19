@@ -104,7 +104,7 @@ Examples
     
     # Sets the device SYSLOG Server Parameters
     - name: Set the an SYSLOG Server Parameter for a WTI device
-      cpm_iptables_config:
+      cpm_syslog_server_config:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
@@ -119,7 +119,7 @@ Examples
 
     # Sets the device SYSLOG Server Parameters
     - name: Set the SYSLOG Server Parameters a WTI device
-      cpm_iptables_config:
+      cpm_syslog_server_config:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
@@ -134,7 +134,7 @@ Examples
         index:
           - 1
           - 2
-        block:
+        address:
           - "192.168.50.4"
           - "72.76.4.56"
 
