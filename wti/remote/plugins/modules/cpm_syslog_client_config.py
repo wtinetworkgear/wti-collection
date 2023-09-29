@@ -188,7 +188,6 @@ data:
                  {"address": "", "port": "514", "transport": "0", "secure": "0", "index": "4"}]}}}
 """
 
-from collections import OrderedDict
 import base64
 import json
 

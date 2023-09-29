@@ -104,7 +104,6 @@ data:
 """
 
 import base64
-import json
 import datetime
 
 from ansible.module_utils.basic import AnsibleModule

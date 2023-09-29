@@ -149,10 +149,10 @@ def run_module():
         cpm_password=dict(type='str', required=True, no_log=True),
         face=dict(type='list', elements='raw', default=None),
         interface=dict(
-                  required=False,
-                  type="str",
-                  choices=["eth0", "eth1", "ppp0", "qmimux0"],
-                 ),
+            required=False,
+            type="str",
+            choices=["eth0", "eth1", "ppp0", "qmimux0"],
+        ),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)

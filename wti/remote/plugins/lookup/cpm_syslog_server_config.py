@@ -188,7 +188,6 @@ data:
                "enable": 0, "port": "514", "secure": "0", "transport": "0"}}]}}
 """
 
-from collections import OrderedDict
 import base64
 import json
 
