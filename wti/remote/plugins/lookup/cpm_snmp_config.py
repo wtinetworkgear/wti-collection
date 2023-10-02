@@ -246,7 +246,6 @@ data:
                 "privproto": "0", "index": "1" }]}}}]
 """
 
-from collections import OrderedDict
 import base64
 import json
 

@@ -37,4 +37,3 @@
   - name: dump test output
     debug:
       msg: "{{ testout['data'] }}"
-

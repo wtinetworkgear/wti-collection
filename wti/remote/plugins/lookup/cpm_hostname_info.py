@@ -132,30 +132,39 @@ def run_module():
     # define the available arguments/parameters that a user can pass to
     # the module
     module_args = dict(
-        cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=True),
-        cpm_password=dict(type='str', required=True, no_log=True),
-        use_https=dict(type='bool', default=True),
-        validate_certs=dict(type='bool', default=True),
-        use_proxy=dict(type='bool', default=False)
+        cpm_url=dict(type="str", required=True),
+        cpm_username=dict(type="str", required=True),
+        cpm_password=dict(type="str", required=True, no_log=True),
+        use_https=dict(type="bool", default=True),
+        validate_certs=dict(type="bool", default=True),
+        use_proxy=dict(type="bool", default=False),
     )
 
-    result = dict(
-        changed=False,
-        data=''
-    )
+    result = dict(changed=False, data="")
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
-                   errors='surrogate_or_strict')))
+    auth = to_text(
+        base64.b64encode(
+            to_bytes(
+                "{0}:{1}".format(
+                    to_native(module.params["cpm_username"]),
+                    to_native(module.params["cpm_password"]),
+                ),
+                errors="surrogate_or_strict",
+            )
+        )
+    )
 
-    if module.params['use_https'] is True:
+    if module.params["use_https"] is True:
         protocol = "https://"
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2/config/hostname" % (protocol, to_native(module.params['cpm_url'])))
+    fullurl = "%s%s/api/v2/config/hostname" % (
+        protocol,
+        to_native(module.params["cpm_url"]),
+    )
 
     try:
         response = open_url(fullurl, data=None, method='GET', validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],

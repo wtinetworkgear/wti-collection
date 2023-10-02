@@ -151,8 +151,6 @@ import base64
 import os
 import json
 import tempfile
-import traceback
-import shutil
 
 try:
     import requests
@@ -164,7 +162,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_text, to_bytes, to_native
 from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.module_utils.urls import open_url, ConnectionError, SSLValidationError
-from ansible.module_utils.urls import fetch_url, url_argument_spec
 
 
 def run_module():
