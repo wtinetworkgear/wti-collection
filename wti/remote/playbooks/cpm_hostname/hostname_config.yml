@@ -18,9 +18,9 @@
       cpm_password: "{{ansible_pw}}"
       use_https: "{{use_https}}"
       validate_certs: "{{validate_certs}}"
-      hostname: "newhostname"
-      location: "newlocation"
-      assettag: "newassettag"
+      hostname: "{{hostname}}"
+      location: "{{location}}"
+      assettag: "{{assettag}}"
 
     register: testout
   - name: dump test output
