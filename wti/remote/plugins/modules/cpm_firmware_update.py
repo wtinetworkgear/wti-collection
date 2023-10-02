@@ -317,9 +317,9 @@ def run_module():
                     if (family == localfilefamily):
                         local_filename = usersuppliedfilename
                     else:
-                        print("FAMILY MISMATCH: Your local file is a %s type, and the device is a %s type\n\n"
-                              % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")))
-                        exit(3)
+                        fail_json = dict(msg='FAIL: FAMILY MISMATCH: Your local file is a {0} type, and the device is a {1} type'.format(("Console" if localfilefamily == 1 else "Power"), 
+                                              ("Console" if family == 1 else "Power")), changed=False)
+                        module.fail_json(**fail_json)
                 # SEND the file to the WTI device
                 # 3. upload new os image to WTI device
                 fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
