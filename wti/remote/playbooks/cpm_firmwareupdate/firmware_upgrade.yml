@@ -1,4 +1,4 @@
-# ansible-playbook ./firmware_upgrade.yml
+# ansible-playbook ./firmware_upgrade.yml -e ansible_hosts=nameofhost (use --check is Dry Run is needed)
 - name: Upgrade WTI Device
   hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
   collections:
