@@ -345,6 +345,9 @@ def run_module():
                 if (localfilefamily == -1):
                     if (int(module.params['removefileonexit']) == 1):
                         os.remove(local_filename)
+            else:
+                fail_json = dict(msg='WARNING: device needs upgrade, Ansible Dry Run is on, upgrade not done.', ignored=True)
+                module.fail_json(**fail_json)                        
         else:
             result['data'] = "{ \"filelength\": \"0\", \"status\": { \"code\": \"1\", \"text\": \"device up to date\" } }"
     else:
