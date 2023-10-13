@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# (C) 2018 Red Hat Inc.
-# Copyright (C) 2018 Western Telematic Inc.
+# (C) 2023 Red Hat Inc.
+# Copyright (C) 2023 Western Telematic Inc.
 #
 # GNU General Public License v3.0+
 #
@@ -18,12 +18,6 @@
 #
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
 
 DOCUMENTATION = """
 ---
@@ -47,12 +41,14 @@ options:
         required: true
     cpm_username:
         description:
-            - This is the Basic Authentication Username of the WTI device to send the module.
+            - This is the Username of the WTI device to send the module. If this value
+            - is blank, then the cpm_password is presumed to be a User Token.
         type: str
-        required: true
+        required: false
     cpm_password:
         description:
-            - This is the Basic Authentication Password of the WTI device to send the module.
+            - This is the Password of the WTI device to send the module. If the
+            - cpm_username is blank, this parameter is presumed to be a User Token..
         type: str
         required: true
     use_https:
@@ -167,6 +163,17 @@ EXAMPLES = """
     validate_certs: true
     user_name: "usernumberone"
 
+# Get User Parameters
+- name: Get the User Parameters for the given user of a WTI device using a User Token
+  cpm_user:
+    cpm_action: "getuser"
+    cpm_url: "rest.wti.com"
+    cpm_username: ""
+    cpm_password: "randomusertokenfromthewtidevice"
+    use_https: true
+    validate_certs: true
+    user_name: "usernumberone"
+
 # Create User
 - name: Create a User on a given WTI device
   cpm_user:
@@ -267,7 +274,7 @@ def run_module():
     module_args = dict(
         cpm_action=dict(choices=['getuser', 'adduser', 'edituser', 'deleteuser'], required=True),
         cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=True, no_log=False),
+        cpm_username=dict(type='str', required=False, no_log=False),
         cpm_password=dict(type='str', required=True, no_log=True),
         user_name=dict(type='str', required=True),
         user_pass=dict(type='str', required=False, default=None, no_log=True),
@@ -297,8 +304,12 @@ def run_module():
     if module.check_mode:
         return result
 
-    auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
-                   errors='surrogate_or_strict')))
+    if (len(to_native(module.params['cpm_username'])) > 0):
+        auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
+                       errors='surrogate_or_strict')))
+        header = {'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth}
+    else:
+        header = {'Content-Type': 'application/json', 'X-WTI-API-KEY': "%s" % (to_native(module.params['cpm_password']))}
 
     if module.params['use_https'] is True:
         protocol = "https://"
@@ -307,26 +318,30 @@ def run_module():
 
     payload = None
     if (module.params['cpm_action'] == 'getuser'):
-        fullurl = ("%s%s/api/v2/config/users?username=%s" % (protocol, to_native(module.params['cpm_url']), to_native(module.params['user_name'])))
+        fullurl = ("%s%s/api/v2%s/config/users?username=%s" % (protocol, to_native(module.params['cpm_url']),
+                   "" if len(to_native(module.params['cpm_username'])) else "/token", to_native(module.params['user_name'])))
         method = 'GET'
     elif (module.params['cpm_action'] == 'adduser'):
         if module.params["user_pass"] is None or (len(module.params["user_pass"]) == 0):
             module.fail_json(msg='user_pass not defined.', **result)
 
         payload = assemble_json(module)
-        fullurl = ("%s%s/api/v2/config/users" % (protocol, to_native(module.params['cpm_url'])))
+        fullurl = ("%s%s/api/v2%s/config/users" % (protocol, to_native(module.params['cpm_url']),
+                   "" if len(to_native(module.params['cpm_username'])) else "/token"))
         method = 'POST'
     elif (module.params['cpm_action'] == 'edituser'):
         payload = assemble_json(module)
-        fullurl = ("%s%s/api/v2/config/users" % (protocol, to_native(module.params['cpm_url'])))
+        fullurl = ("%s%s/api/v2%s/config/users" % (protocol, to_native(module.params['cpm_url']),
+                   "" if len(to_native(module.params['cpm_username'])) else "/token"))
         method = 'PUT'
     elif (module.params['cpm_action'] == 'deleteuser'):
-        fullurl = ("%s%s/api/v2/config/users?username=%s" % (protocol, to_native(module.params['cpm_url']), to_native(module.params['user_name'])))
+        fullurl = ("%s%s/api/v2%s/config/users?username=%s" % (protocol, to_native(module.params['cpm_url']),
+                   "" if len(to_native(module.params['cpm_username'])) else "/token", to_native(module.params['user_name'])))
         method = 'DELETE'
 
     try:
         response = open_url(fullurl, data=payload, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                            headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
+                            headers=header)
         if (method != 'GET'):
             result['changed'] = True
 

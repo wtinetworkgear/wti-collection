@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# (C) 2018 Red Hat Inc.
-# Copyright (C) 2018 Western Telematic Inc. <kenp@wti.com>
+# (C) 2023 Red Hat Inc.
+# Copyright (C) 2023 Western Telematic Inc. <kenp@wti.com>
 #
 # GNU General Public License v3.0+
 #
@@ -18,12 +18,6 @@
 #
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
 
 DOCUMENTATION = """
 ---
@@ -47,12 +41,14 @@ options:
     required: true
   cpm_username:
     description:
-      - This is the Username of the WTI device to send the module.
+      - This is the Username of the WTI device to send the module. If this value
+      - is blank, then the cpm_password is presumed to be a User Token.
     type: str
-    required: true
+    required: false
   cpm_password:
     description:
-      - This is the Password of the WTI device to send the module.
+      - This is the Password of the WTI device to send the module. If the
+      - cpm_username is blank, this parameter is presumed to be a User Token.
     type: str
     required: true
   use_https:
@@ -96,6 +92,17 @@ EXAMPLES = """
     cpm_url: "rest.wti.com"
     cpm_username: "restpower"
     cpm_password: "restfulpowerpass12"
+    use_https: true
+    validate_certs: true
+    plug_id: "all"
+
+# Get Plug status for all ports using a User Token
+- name: Get the Plug status for ALL ports of a WTI device
+  cpm_plugcontrol:
+    cpm_action: "getplugcontrol"
+    cpm_url: "rest.wti.com"
+    cpm_username: ""
+    cpm_password: "randomusertokenfromthewtidevice"
     use_https: true
     validate_certs: true
     plug_id: "all"
@@ -164,7 +171,7 @@ def run_module():
     module_args = dict(
         cpm_action=dict(choices=['getplugcontrol', 'setplugcontrol'], required=True),
         cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=True),
+        cpm_username=dict(type='str', required=False),
         cpm_password=dict(type='str', required=True, no_log=True),
         plug_id=dict(type='str', required=True),
         plug_state=dict(choices=['on', 'off', 'boot', 'default'], required=False),
@@ -183,8 +190,12 @@ def run_module():
     if module.check_mode:
         return result
 
-    auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
-                   errors='surrogate_or_strict')))
+    if (len(to_native(module.params['cpm_username'])) > 0):
+        auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
+                       errors='surrogate_or_strict')))
+        header = {'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth}
+    else:
+        header = {'Content-Type': 'application/json', 'X-WTI-API-KEY': "%s" % (to_native(module.params['cpm_password']))}
 
     if module.params['use_https'] is True:
         protocol = "https://"
@@ -193,18 +204,20 @@ def run_module():
 
     Payload = None
     if (module.params['cpm_action'] == 'getplugcontrol'):
-        fullurl = ("%s%s/api/v2/config/powerplug" % (protocol, to_native(module.params['cpm_url'])))
+        fullurl = ("%s%s/api/v2%s/config/powerplug" % (protocol, to_native(module.params['cpm_url']),
+                   "" if len(to_native(module.params['cpm_username'])) else "/token"))
         if (module.params['plug_id'].lower() != 'all'):
             fullurl = '%s?plug=%s' % (fullurl, to_native(module.params['plug_id']))
         method = 'GET'
     elif (module.params['cpm_action'] == 'setplugcontrol'):
         Payload = assemble_json(module, result)
-        fullurl = ("%s%s/api/v2/config/powerplug" % (protocol, to_native(module.params['cpm_url'])))
+        fullurl = ("%s%s/api/v2%s/config/powerplug" % (protocol, to_native(module.params['cpm_url']),
+                   "" if len(to_native(module.params['cpm_username'])) else "/token"))
         method = 'POST'
 
     try:
         response = open_url(fullurl, data=Payload, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                            headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
+                            headers=header)
         if (method != 'GET'):
             result['changed'] = True
 

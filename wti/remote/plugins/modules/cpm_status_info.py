@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# (C) 2019 Red Hat Inc.
-# Copyright (C) 2019 Western Telematic Inc.
+# (C) 2023 Red Hat Inc.
+# Copyright (C) 2023 Western Telematic Inc.
 #
 # GNU General Public License v3.0+
 #
@@ -18,12 +18,6 @@
 #
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
-
-ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'community'
-}
 
 DOCUMENTATION = """
 ---
@@ -42,12 +36,14 @@ options:
         required: true
     cpm_username:
         description:
-            - This is the Username of the WTI device to send the module.
+            - This is the Username of the WTI device to send the module. If this value
+            - is blank, then the cpm_password is presumed to be a User Token.
         type: str
-        required: true
+        required: false
     cpm_password:
         description:
-            - This is the Password of the WTI device to send the module.
+            - This is the Password of the WTI device to send the module. If the
+            - cpm_username is blank, this parameter is presumed to be a User Token.
         type: str
         required: true
     use_https:
@@ -82,12 +78,12 @@ EXAMPLES = """
     use_https: true
     validate_certs: false
 
-- name: Get the Status Information for a WTI device
+- name: Get the Status Information for a WTI device using a User Token
   cpm_status_info:
     cpm_url: "nonexist.wti.com"
-    cpm_username: "super"
-    cpm_password: "super"
-    use_https: false
+    cpm_username: ""
+    cpm_password: "randomusertokenfromthewtidevice"
+    use_https: true
     validate_certs: false
 """
 
@@ -126,7 +122,7 @@ data:
             description: Expanded Firmware version of the WTI device.
             returned: success
             type: str
-            sample: "6.60 19 Feb 2020"
+            sample: "8.01 19 Feb 2023"
         serialnumber:
             description: Current Serial number of the WTI device.
             returned: success
@@ -166,7 +162,7 @@ data:
             description: Current Board and Program date of the WTI device.
             returned: success
             type: str
-            sample: "ARM, 4-30-2019"
+            sample: "ARM, 4-30-2022"
         ram_flash:
             description: Total RAM and FLASH installed in the WTI device..
             returned: success
@@ -191,22 +187,22 @@ data:
             description: Current OpenSSL version running on the WTI device.
             returned: success
             type: str
-            sample: "1.1.1d  10 Sep 2019"
+            sample: "3.0.8  10 Sep 2022"
         opensshversion:
             description: Current OpenSSH running on the WTI device.
             returned: success
             type: str
-            sample: "8.2p1"
+            sample: "9.4p1"
         apacheversion:
             description: Current Apache Web version running on the WTI device.
             returned: success
             type: str
-            sample: "2.4.41"
+            sample: "2.4.55"
         apirelease:
             description: Current Date of the API release of the WTI device.
             returned: success
             type: str
-            sample: "March 2020"
+            sample: "March 2023"
         uptime:
             description: Current uptime of the WTI device.
             returned: success
@@ -221,7 +217,7 @@ data:
             description: Current RESTful version of the WTI device.
             returned: success
             type: str
-            sample: "v1.0, v2 (Mar20)"
+            sample: "v1.0, v2 (Mar23)"
         interface_list:
             description: Current ethernet ports of the WTI device.
             returned: success
@@ -253,7 +249,7 @@ def run_module():
     # the module
     module_args = dict(
         cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=True),
+        cpm_username=dict(type='str', required=False),
         cpm_password=dict(type='str', required=True, no_log=True),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
@@ -267,19 +263,24 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
-                   errors='surrogate_or_strict')))
+    if (len(to_native(module.params['cpm_username'])) > 0):
+        auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
+                       errors='surrogate_or_strict')))
+        header = {'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth}
+    else:
+        header = {'Content-Type': 'application/json', 'X-WTI-API-KEY': "%s" % (to_native(module.params['cpm_password']))}
 
     if module.params['use_https'] is True:
         protocol = "https://"
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2/status/status" % (protocol, to_native(module.params['cpm_url'])))
+    fullurl = ("%s%s/api/v2%s/status/status" % (protocol, to_native(module.params['cpm_url']),
+               "" if len(to_native(module.params['cpm_username'])) else "/token"))
 
     try:
         response = open_url(fullurl, data=None, method='GET', validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                            headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
+                            headers=header)
 
     except HTTPError as e:
         fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)

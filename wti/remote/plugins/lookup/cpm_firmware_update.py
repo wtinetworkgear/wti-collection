@@ -308,8 +308,8 @@ def run_module():
                     if (family == localfilefamily):
                         local_filename = usersuppliedfilename
                     else:
-                        fail_json = dict(msg='FAIL: FAMILY MISMATCH: Your local file is a {0} type, and the device is a {1} type'.format(("Console" if localfilefamily == 1 else "Power"), 
-                                              ("Console" if family == 1 else "Power")), changed=False)
+                        fail_json = dict(msg='FAIL: FAMILY MISMATCH: Your local file is a {0} type, and the device is a {1} type'
+                                             .format(("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")), changed=False)
                         module.fail_json(**fail_json)
                 # SEND the file to the WTI device
                 # 3. upload new os image to WTI device

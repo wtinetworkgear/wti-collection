@@ -317,8 +317,8 @@ def run_module():
                     if (family == localfilefamily):
                         local_filename = usersuppliedfilename
                     else:
-                        fail_json = dict(msg='FAIL: FAMILY MISMATCH: Your local file is a {0} type, and the device is a {1} type'.format(("Console" if localfilefamily == 1 else "Power"), 
-                                              ("Console" if family == 1 else "Power")), changed=False)
+                        fail_json = dict(msg='FAIL: FAMILY MISMATCH: Your local file is a {0} type, and the device is a {1} type'
+                                             .format(("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")), changed=False)
                         module.fail_json(**fail_json)
                 # SEND the file to the WTI device
                 # 3. upload new os image to WTI device
@@ -347,7 +347,7 @@ def run_module():
                         os.remove(local_filename)
             else:
                 fail_json = dict(msg='WARNING: device needs upgrade, Ansible Dry Run is on, upgrade not done.', ignored=True)
-                module.fail_json(**fail_json)                        
+                module.fail_json(**fail_json)
         else:
             result['data'] = "{ \"filelength\": \"0\", \"status\": { \"code\": \"1\", \"text\": \"device up to date\" } }"
     else:
