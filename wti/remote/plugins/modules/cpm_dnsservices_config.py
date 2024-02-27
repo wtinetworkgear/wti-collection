@@ -13,7 +13,7 @@
 #
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
-# Module to execute WTI hostname parameters from WTI OOB and PDU devices.
+# Module to configure WTI network DNS Services Parameters on WTI OOB and PDU devices.
 # CPM remote_management
 #
 from __future__ import absolute_import, division, print_function
@@ -21,13 +21,12 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 ---
-module: cpm_hostname_config
-version_added: "2.11.0"
-author:
-    - "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Set Hostname (Site ID), Location, Asset Tag parameters in WTI OOB and PDU devices.
+module: cpm_dnsservices_config
+version_added: "2.10.0"
+author: "Western Telematic Inc. (@wtinetworkgear)"
+short_description: Set network DNS Services parameters in WTI OOB and PDU devices
 description:
-    - "Set Hostname (Site ID), Location, Asset Tag parameters parameters in WTI OOB and PDU devices"
+    - "Set network DNS Services parameters in WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
@@ -65,71 +64,57 @@ options:
         type: bool
         required: false
         default: false
-    hostname:
+    index:
         description:
-            - This is the Hostname (Site-ID) tag to be set for the WTI OOB and PDU device.
-        type: str
+            - Index in which DNS Server should be inserted. If not defined entry will start at position one.
+        type: list
+        elements: int
         required: false
-    location:
+    dnsservers:
         description:
-            - This is the Location tag to be set for the WTI OOB and PDU device.
-        type: str
-        required: false
-    assettag:
-        description:
-            - This is the Asset Tag to be set for the WTI OOB and PDU device.
-        type: str
-        required: false
-    siteid:
-        description:
-            - This is the SiteID Tag to be set for the WTI OOB and PDU device.
-        type: str
-        required: false
-    domain:
-        description:
-            - This is the Domain Tag to be set for the WTI OOB and PDU device.
-        type: str
-        required: false
-
+            - Actual DNS Server to send to the WTI device.
+        type: list
+        elements: str
+        required: true
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
 """
 
 EXAMPLES = """
-# Set Hostname, Location, Site-ID and Asset Tag variables of a WTI device
-- name: Set known fixed hostname variables of a WTI device
-  cpm_hostname_config:
+# Set Network DNS Services Parameters
+- name: Set the an DNS Services Parameter for a WTI device
+  cpm_dnsservices_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
     use_https: true
     validate_certs: false
-    hostname: "myhostname"
-    location: "Irvine"
-    siteid:   "MySiteID"
-    assettag: "irvine92395"
+    dnsservers: "8.8.8.8"
 
-# Set Hostname, Location and Asset Tag variables of a WTI device using a User Token
-- name: Set known fixed hostname variables of a WTI device
-  cpm_hostname_config:
+# Set Network DNS Services Parameters using a User Token
+- name: Set the an DNS Services Parameter for a WTI device
+  cpm_dnsservices_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: ""
     cpm_password: "randomusertokenfromthewtidevice"
     use_https: true
     validate_certs: false
-    hostname: "myhostname"
-    location: "Irvine"
-    assettag: "irvine92395"
+    dnsservers: "8.8.4.4"
 
-# Set the Hostname variable of a WTI device
-- name: Set the Hostname of a WTI device
-  cpm_hostname_config:
+# Sets multiple Network DNS Services Parameters
+- name: Set the DNS Services Parameters a WTI device
+  cpm_dnsservices_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
     use_https: true
     validate_certs: false
-    hostname: "myhostname"
+    index:
+      - 1
+      - 2
+    dnsservers:
+      - "8.8.8.8"
+      - "8.8.4.4"
 """
 
 RETURN = """
@@ -138,37 +123,15 @@ data:
   returned: always
   type: complex
   contains:
-    timestamp:
-      description: Current timestamp of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "2021-08-17T21:33:50+00:00"
-    siteid:
-      description: Current Site-ID of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "siteid"
-    location:
-      description: Current Location of the WTI device after module execution.
-      returned: success
-      type: int
-      sample: "Irvine"
-    assettag:
-      description: Current Asset Tag of the WTI device after module execution.
-      returned: success
-      type: int
-      sample: "irvine92395"
-    hostname:
-      description: Current Hostname of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "myhostname"
-    domain:
-      description: Current domain of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "companylab.com"
-
+    dnsservices:
+      description: Current k/v pairs of interface info for the WTI device after module execution.
+      returned: always
+      type: dict
+      sample: {"servers": [
+              {"dnsserver1": [	{"ip": "166.216.138.41"}],
+               "dnsserver2": [	{"ip": "166.216.138.42"}],
+               "dnsserver3": [	{"ip": "8.8.8.8"}],
+               "dnsserver4": [	{"ip": ""}]}]}
 """
 
 import base64
@@ -180,65 +143,52 @@ from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.module_utils.urls import open_url, ConnectionError, SSLValidationError
 
 
-def assemble_json(cpmmodule, existing):
-    total_change = 0
-    json_load = ietfstring = ""
+def assemble_json(cpmmodule, existing_interface):
+    total_servers = total_indices = 0
+    is_changed = 0
+    json_load = ""
 
-    localhostname = locallocation = localassettag = localsiteid = localdomain = None
+    indices = []
+    servers = []
 
-    if cpmmodule.params["hostname"] is not None:
-        if (existing["unitid"]["hostname"] != to_native(cpmmodule.params["hostname"])):
-            total_change = (total_change | 1)
-            localhostname = to_native(cpmmodule.params["hostname"])
-    if cpmmodule.params["location"] is not None:
-        if (existing["unitid"]["location"] != to_native(cpmmodule.params["location"])):
-            total_change = (total_change | 2)
-            locallocation = to_native(cpmmodule.params["location"])
-    if cpmmodule.params["assettag"] is not None:
-        if (existing["unitid"]["assettag"] != to_native(cpmmodule.params["assettag"])):
-            total_change = (total_change | 4)
-            localassettag = to_native(cpmmodule.params["assettag"])
-    if cpmmodule.params["siteid"] is not None:
-        if (existing["unitid"]["siteid"] != to_native(cpmmodule.params["siteid"])):
-            total_change = (total_change | 8)
-            localsiteid = to_native(cpmmodule.params["siteid"])
-    if cpmmodule.params["domain"] is not None:
-        if (existing["unitid"]["domain"] != to_native(cpmmodule.params["domain"])):
-            total_change = (total_change | 16)
-            localdomain = to_native(cpmmodule.params["domain"])
+    for x in range(0, 48):
+        indices.insert(x, None)
+        servers.insert(x, None)
 
-    if (total_change > 0):
-        protocol = protocolchanged = 0
-        ietfstring = ""
+    index = cpmmodule.params['index']
+    if (index is not None):
+        if isinstance(index, list):
+            for x in index:
+                indices.insert(total_indices, (int(to_native(x))) - 1)
+                total_indices += 1
 
-        if (localhostname is not None):
-            ietfstring = '%s"hostname": "%s"' % (ietfstring, localhostname)
+    dnsservers = cpmmodule.params['dnsservers']
+    if (dnsservers is not None):
+        if isinstance(dnsservers, list):
+            for x in dnsservers:
+                if (total_indices == 0):
+                    servers.insert(total_servers, to_native(x))
+                else:
+                    servers.insert(indices[total_servers], to_native(x))
+                total_servers += 1
 
-        if (locallocation is not None):
-            if (len(ietfstring) > 0):
-                ietfstring = '%s,' % (ietfstring)
-            ietfstring = '%s"location": "%s"' % (ietfstring, locallocation)
+    if (total_indices > 0):
+        if (total_servers != total_indices):
+            return None
 
-        if (localassettag is not None):
-            if (len(ietfstring) > 0):
-                ietfstring = '%s,' % (ietfstring)
-            ietfstring = '%s"assettag": "%s"' % (ietfstring, localassettag)
+    for x in range(0, 4):
+        if (servers[x] is not None):
+            dnsservertag = "dnsserver%d" % (x+1)
+            if (existing_interface["dnsservices"]["servers"][0][dnsservertag][0]["ip"] != servers[x]):
+                if (is_changed > 0):
+                    json_load = '%s,' % (json_load)
+                json_load = '%s"%s": [	{"ip": "%s"}	]' % (json_load, dnsservertag, servers[x])
 
-        if (localsiteid is not None):
-            if (len(ietfstring) > 0):
-                ietfstring = '%s,' % (ietfstring)
-            ietfstring = '%s"siteid": "%s"' % (ietfstring, localsiteid)
+                is_changed += 1
 
-        if (localdomain is not None):
-            if (len(ietfstring) > 0):
-                ietfstring = '%s,' % (ietfstring)
-            ietfstring = '%s"domain": "%s"' % (ietfstring, localdomain)
+    if (is_changed > 0):
+        json_load = '{"dnsservices": {"servers": [{ %s }]}}' % (json_load)
 
-        json_load = '{"unitid": {'
-        json_load = '%s%s' % (json_load, ietfstring)
-        json_load = '%s}}' % (json_load)
-    else:
-        json_load = None
     return json_load
 
 
@@ -249,11 +199,8 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=False),
         cpm_password=dict(type='str', required=True, no_log=True),
-        hostname=dict(type='str', required=False, default=None),
-        location=dict(type='str', required=False, default=None),
-        assettag=dict(type='str', required=False, default=None),
-        siteid=dict(type='str', required=False, default=None),
-        domain=dict(type='str', required=False, default=None),
+        index=dict(type='list', elements='int', required=False, default=None),
+        dnsservers=dict(type='list', elements='str', required=True),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)
@@ -274,11 +221,11 @@ def run_module():
         header = {'Content-Type': 'application/json', 'X-WTI-API-KEY': "%s" % (to_native(module.params['cpm_password']))}
 
     if module.params['use_https'] is True:
-        protocol = "https://"
+        transport = "https://"
     else:
-        protocol = "http://"
+        transport = "http://"
 
-    fullurl = ("%s%s/api/v2%s/config/hostname" % (protocol, to_native(module.params['cpm_url']),
+    fullurl = ("%s%s/api/v2%s/status/dnsservices" % (transport, to_native(module.params['cpm_url']),
                "" if len(to_native(module.params['cpm_username'])) else "/token"))
     method = 'GET'
     try:
@@ -298,15 +245,15 @@ def run_module():
         fail_json = dict(msg='GET: Error connecting to {0} : {1}'.format(fullurl, to_native(e)), changed=False)
         module.fail_json(**fail_json)
 
-    result['data'] = response.read()
-    payload = assemble_json(module, json.loads(result['data']))
+    result['data'] = json.loads(response.read())
+    payload = assemble_json(module, result['data'])
 
     if module.check_mode:
-        if payload is not None:
+        if (payload is not None) and (len(payload) > 0):
             result['changed'] = True
     else:
-        if payload is not None:
-            fullurl = ("%s%s/api/v2%s/config/hostname" % (protocol, to_native(module.params['cpm_url']),
+        if (payload is not None) and (len(payload) > 0):
+            fullurl = ("%s%s/api/v2%s/config/dnsservices" % (transport, to_native(module.params['cpm_url']),
                        "" if len(to_native(module.params['cpm_username'])) else "/token"))
             method = 'POST'
 

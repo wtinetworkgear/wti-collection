@@ -13,7 +13,7 @@
 #
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 #
-# Module to retrieve WTI hostname parameters from WTI OOB and PDU devices.
+# Module to retrieve WTI Network DNS Services Parameters from WTI OOB and PDU devices.
 # CPM remote_management
 #
 from __future__ import absolute_import, division, print_function
@@ -21,13 +21,12 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 ---
-module: cpm_hostname_info
-version_added: "2.11.0"
-author:
-    - "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Get Hostname (Site ID), Location, Asset Tag parameters in WTI OOB and PDU devices
+module: cpm_dnsservices_info
+version_added: "2.10.0"
+author: "Western Telematic Inc. (@wtinetworkgear)"
+short_description: Get network DNS Services parameters from WTI OOB and PDU devices
 description:
-    - "Get Hostname (Site ID), Location, Asset Tag parameters from WTI OOB and PDU devices"
+    - "Get network DNS Services parameters from WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
@@ -37,7 +36,7 @@ options:
     cpm_username:
         description:
             - This is the Username of the WTI device to send the module. If this value
-            - is blank, then the cpm_password is presumed to be a User Token..
+            - is blank, then the cpm_password is presumed to be a User Token.
         type: str
         required: false
     cpm_password:
@@ -70,24 +69,24 @@ notes:
 """
 
 EXAMPLES = """
-- name: Get the Hostname parameters for a WTI device
-  cpm_hostname_info:
+- name: Get the network IPTABLES Parameters for a WTI device.
+  cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
     use_https: true
     validate_certs: false
 
-- name: Get the Hostname parameters for a WTI device using a User Token
-  cpm_hostname_info:
+- name: Get the network IPTABLES Parameters for a WTI device using a User Token.
+  cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: ""
     cpm_password: "randomusertokenfromthewtidevice"
     use_https: true
     validate_certs: false
 
-- name: Get the Hostname parameters for a WTI device
-  cpm_hostname_info:
+- name: Get the network IPTABLES Parameters for a WTI device.
+  cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -101,34 +100,15 @@ data:
   returned: always
   type: complex
   contains:
-    timestamp:
-      description: Current timestamp of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "2021-08-17T21:33:50+00:00"
-    hostname:
-      description: Current Hostname (Site-ID) of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "myhostname"
-    location:
-      description: Current Location of the WTI device after module execution.
-      returned: success
-      type: int
-      sample: "Irvine"
-    assettag:
-      description: Current Asset Tag of the WTI device after module execution.
-      returned: success
-      type: int
-      sample: "irvine92395"
-    siteid:
-      description: This is the SiteID Tag to be set for the WTI OOB and PDU device.
-      type: str
-      required: false
-    domain:
-      description: This is the Domain Tag to be set for the WTI OOB and PDU device.
-      type: str
-      required: false
+    iptables:
+      description: Current k/v pairs of DNS Services info for the WTI device after module execution.
+      returned: always
+      type: dict
+      sample: {"dnsservices": {"servers": [
+              {"dnsserver1": [	{"ip": "166.216.138.41"}],
+               "dnsserver2": [	{"ip": "166.216.138.42"}],
+               "dnsserver3": [	{"ip": "8.8.8.8"}],
+               "dnsserver4": [	{"ip": ""}]}]}
 """
 
 import base64
@@ -171,7 +151,7 @@ def run_module():
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2%s/config/hostname" % (protocol, to_native(module.params['cpm_url']),
+    fullurl = ("%s%s/api/v2%s/status/dnsservices" % (protocol, to_native(module.params['cpm_url']),
                "" if len(to_native(module.params['cpm_username'])) else "/token"))
 
     try:
