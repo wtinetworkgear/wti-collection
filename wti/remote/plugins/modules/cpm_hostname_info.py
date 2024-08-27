@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# (C) 2023 Red Hat Inc.
-# Copyright (C) 2023 Western Telematic Inc.
+# (C) 2019 Red Hat Inc.
+# Copyright (C) 2021 Western Telematic Inc.
 #
 # GNU General Public License v3.0+
 #
@@ -18,6 +18,12 @@
 #
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
+
+ANSIBLE_METADATA = {
+    'metadata_version': '1.1',
+    'status': ['preview'],
+    'supported_by': 'community'
+}
 
 DOCUMENTATION = """
 ---
@@ -36,14 +42,12 @@ options:
         required: true
     cpm_username:
         description:
-            - This is the Username of the WTI device to send the module. If this value
-            - is blank, then the cpm_password is presumed to be a User Token..
+            - This is the Username of the WTI device to send the module.
         type: str
-        required: false
+        required: true
     cpm_password:
         description:
-            - This is the Password of the WTI device to send the module. If the
-            - cpm_username is blank, this parameter is presumed to be a User Token.
+            - This is the Password of the WTI device to send the module.
         type: str
         required: true
     use_https:
@@ -75,14 +79,6 @@ EXAMPLES = """
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
-    use_https: true
-    validate_certs: false
-
-- name: Get the Hostname parameters for a WTI device using a User Token
-  cpm_hostname_info:
-    cpm_url: "nonexist.wti.com"
-    cpm_username: ""
-    cpm_password: "randomusertokenfromthewtidevice"
     use_https: true
     validate_certs: false
 
@@ -121,14 +117,6 @@ data:
       returned: success
       type: int
       sample: "irvine92395"
-    siteid:
-      description: This is the SiteID Tag to be set for the WTI OOB and PDU device.
-      type: str
-      required: false
-    domain:
-      description: This is the Domain Tag to be set for the WTI OOB and PDU device.
-      type: str
-      required: false
 """
 
 import base64
@@ -145,7 +133,7 @@ def run_module():
     # the module
     module_args = dict(
         cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=False),
+        cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
@@ -159,24 +147,19 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    if (len(to_native(module.params['cpm_username'])) > 0):
-        auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
-                       errors='surrogate_or_strict')))
-        header = {'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth}
-    else:
-        header = {'Content-Type': 'application/json', 'X-WTI-API-KEY': "%s" % (to_native(module.params['cpm_password']))}
+    auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
+                   errors='surrogate_or_strict')))
 
     if module.params['use_https'] is True:
         protocol = "https://"
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2%s/config/hostname" % (protocol, to_native(module.params['cpm_url']),
-               "" if len(to_native(module.params['cpm_username'])) else "/token"))
+    fullurl = ("%s%s/api/v2/config/hostname" % (protocol, to_native(module.params['cpm_url'])))
 
     try:
         response = open_url(fullurl, data=None, method='GET', validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                            headers=header)
+                            headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
 
     except HTTPError as e:
         fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)

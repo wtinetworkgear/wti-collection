@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# (C) 2023 Red Hat Inc.
-# Copyright (C) 2023 Western Telematic Inc.
+# (C) 2019 Red Hat Inc.
+# Copyright (C) 2021 Western Telematic Inc.
 #
 # GNU General Public License v3.0+
 #
@@ -18,6 +18,12 @@
 #
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
+
+ANSIBLE_METADATA = {
+    'metadata_version': '1.1',
+    'status': ['preview'],
+    'supported_by': 'community'
+}
 
 DOCUMENTATION = """
 ---
@@ -36,14 +42,12 @@ options:
         required: true
     cpm_username:
         description:
-            - This is the Username of the WTI device to send the module. If this value
-            - is blank, then the cpm_password is presumed to be a User Token.
+            - This is the Username of the WTI device to send the module.
         type: str
-        required: false
+        required: true
     cpm_password:
         description:
-            - This is the Password of the WTI device to send the module. If the
-            - cpm_username is blank, this parameter is presumed to be a User Token.
+            - This is the Password of the WTI device to send the module.
         type: str
         required: true
     use_https:
@@ -129,7 +133,7 @@ notes:
 EXAMPLES = """
 # Sets the device SYSLOG Server Parameters
 - name: Set the an SYSLOG Server Parameter for a WTI device
-  cpm_syslog_server_config:
+  cpm_iptables_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -143,23 +147,8 @@ EXAMPLES = """
     clear: 1
 
 # Sets the device SYSLOG Server Parameters
-- name: Set the an SYSLOG Server Parameter for a WTI device using a User Token
-  cpm_syslog_server_config:
-    cpm_url: "nonexist.wti.com"
-    cpm_username: ""
-    cpm_password: "randomusertokenfromthewtidevice"
-    use_https: true
-    validate_certs: false
-    interface: "eth0"
-    protocol: 0
-    port: 514
-    transport: 0
-    secure: 0
-    clear: 1
-
-# Sets the device SYSLOG Server Parameters
 - name: Set the SYSLOG Server Parameters a WTI device
-  cpm_syslog_server_config:
+  cpm_iptables_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -174,7 +163,7 @@ EXAMPLES = """
     index:
       - 1
       - 2
-    address:
+    block:
       - "192.168.50.4"
       - "72.76.4.56"
 """
@@ -199,6 +188,7 @@ data:
                "enable": 0, "port": "514", "secure": "0", "transport": "0"}}]}}
 """
 
+from collections import OrderedDict
 import base64
 import json
 
@@ -326,7 +316,7 @@ def run_module():
     # the module
     module_args = dict(
         cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=False),
+        cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
         interface=dict(type="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         protocol=dict(type='int', required=False, default=None, choices=[0, 1]),
@@ -349,24 +339,19 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    if (len(to_native(module.params['cpm_username'])) > 0):
-        auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
-                       errors='surrogate_or_strict')))
-        header = {'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth}
-    else:
-        header = {'Content-Type': 'application/json', 'X-WTI-API-KEY': "%s" % (to_native(module.params['cpm_password']))}
+    auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
+                   errors='surrogate_or_strict')))
 
     if module.params['use_https'] is True:
         transport = "https://"
     else:
         transport = "http://"
 
-    fullurl = ("%s%s/api/v2%s/config/syslogserver?ports=%s" % (transport, to_native(module.params['cpm_url']),
-               "" if len(to_native(module.params['cpm_username'])) else "/token", to_native(module.params['interface'])))
+    fullurl = ("%s%s/api/v2/config/syslogserver?ports=%s" % (transport, to_native(module.params['cpm_url']), to_native(module.params['interface'])))
     method = 'GET'
     try:
         response = open_url(fullurl, data=None, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                            headers=header)
+                            headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
 
     except HTTPError as e:
         fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)
@@ -391,13 +376,12 @@ def run_module():
             result['changed'] = True
     else:
         if (payload is not None) and (len(payload) > 0):
-            fullurl = ("%s%s/api/v2%s/config/syslogserver" % (transport, to_native(module.params['cpm_url']),
-                       "" if len(to_native(module.params['cpm_username'])) else "/token"))
+            fullurl = ("%s%s/api/v2/config/syslogserver" % (transport, to_native(module.params['cpm_url'])))
             method = 'POST'
 
             try:
                 response = open_url(fullurl, data=payload, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                                    headers=header)
+                                    headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
 
             except HTTPError as e:
                 fail_json = dict(msg='POST: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)

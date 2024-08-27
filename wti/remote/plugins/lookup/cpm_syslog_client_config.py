@@ -118,7 +118,7 @@ notes:
 EXAMPLES = """
 # Sets the device SYSLOG Client Parameters
 - name: Set the an SYSLOG Client Parameter for a WTI device
-  cpm_syslog_client_config:
+  cpm_iptables_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -138,7 +138,7 @@ EXAMPLES = """
 
 # Sets the device SYSLOG Client Parameters
 - name: Set the SYSLOG Client Parameters a WTI device
-  cpm_syslog_client_config:
+  cpm_iptables_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -187,6 +187,7 @@ data:
                  {"address": "", "port": "514", "transport": "0", "secure": "0", "index": "4"}]}}}
 """
 
+from collections import OrderedDict
 import base64
 import json
 

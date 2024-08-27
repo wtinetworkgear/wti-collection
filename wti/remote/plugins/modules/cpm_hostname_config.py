@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# (C) 2023 Red Hat Inc.
-# Copyright (C) 2023 Western Telematic Inc.
+# (C) 2019 Red Hat Inc.
+# Copyright (C) 2021 Western Telematic Inc.
 #
 # GNU General Public License v3.0+
 #
@@ -18,6 +18,12 @@
 #
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
+
+ANSIBLE_METADATA = {
+    'metadata_version': '1.1',
+    'status': ['preview'],
+    'supported_by': 'community'
+}
 
 DOCUMENTATION = """
 ---
@@ -36,14 +42,12 @@ options:
         required: true
     cpm_username:
         description:
-            - This is the Username of the WTI device to send the module. If this value
-            - is blank, then the cpm_password is presumed to be a User Token.
+            - This is the Username of the WTI device to send the module.
         type: str
-        required: false
+        required: true
     cpm_password:
         description:
-            - This is the Password of the WTI device to send the module. If the
-            - cpm_username is blank, this parameter is presumed to be a User Token.
+            - This is the Password of the WTI device to send the module.
         type: str
         required: true
     use_https:
@@ -80,41 +84,17 @@ options:
             - This is the Asset Tag to be set for the WTI OOB and PDU device.
         type: str
         required: false
-    siteid:
-        description:
-            - This is the SiteID Tag to be set for the WTI OOB and PDU device.
-        type: str
-        required: false
-    domain:
-        description:
-            - This is the Domain Tag to be set for the WTI OOB and PDU device.
-        type: str
-        required: false
-
 notes:
   - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
 """
 
 EXAMPLES = """
-# Set Hostname, Location, Site-ID and Asset Tag variables of a WTI device
+# Set Hostname, Location and Site-ID variables of a WTI device
 - name: Set known fixed hostname variables of a WTI device
-  cpm_hostname_config:
+  cpm_time_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
-    use_https: true
-    validate_certs: false
-    hostname: "myhostname"
-    location: "Irvine"
-    siteid:   "MySiteID"
-    assettag: "irvine92395"
-
-# Set Hostname, Location and Asset Tag variables of a WTI device using a User Token
-- name: Set known fixed hostname variables of a WTI device
-  cpm_hostname_config:
-    cpm_url: "nonexist.wti.com"
-    cpm_username: ""
-    cpm_password: "randomusertokenfromthewtidevice"
     use_https: true
     validate_certs: false
     hostname: "myhostname"
@@ -123,7 +103,7 @@ EXAMPLES = """
 
 # Set the Hostname variable of a WTI device
 - name: Set the Hostname of a WTI device
-  cpm_hostname_config:
+  cpm_time_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -143,11 +123,11 @@ data:
       returned: success
       type: str
       sample: "2021-08-17T21:33:50+00:00"
-    siteid:
-      description: Current Site-ID of the WTI device after module execution.
+    hostname:
+      description: Current Hostname (Site-ID) of the WTI device after module execution.
       returned: success
       type: str
-      sample: "siteid"
+      sample: "myhostname"
     location:
       description: Current Location of the WTI device after module execution.
       returned: success
@@ -158,17 +138,6 @@ data:
       returned: success
       type: int
       sample: "irvine92395"
-    hostname:
-      description: Current Hostname of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "myhostname"
-    domain:
-      description: Current domain of the WTI device after module execution.
-      returned: success
-      type: str
-      sample: "companylab.com"
-
 """
 
 import base64
@@ -184,7 +153,7 @@ def assemble_json(cpmmodule, existing):
     total_change = 0
     json_load = ietfstring = ""
 
-    localhostname = locallocation = localassettag = localsiteid = localdomain = None
+    localhostname = locallocation = localassettag = None
 
     if cpmmodule.params["hostname"] is not None:
         if (existing["unitid"]["hostname"] != to_native(cpmmodule.params["hostname"])):
@@ -198,14 +167,6 @@ def assemble_json(cpmmodule, existing):
         if (existing["unitid"]["assettag"] != to_native(cpmmodule.params["assettag"])):
             total_change = (total_change | 4)
             localassettag = to_native(cpmmodule.params["assettag"])
-    if cpmmodule.params["siteid"] is not None:
-        if (existing["unitid"]["siteid"] != to_native(cpmmodule.params["siteid"])):
-            total_change = (total_change | 8)
-            localsiteid = to_native(cpmmodule.params["siteid"])
-    if cpmmodule.params["domain"] is not None:
-        if (existing["unitid"]["domain"] != to_native(cpmmodule.params["domain"])):
-            total_change = (total_change | 16)
-            localdomain = to_native(cpmmodule.params["domain"])
 
     if (total_change > 0):
         protocol = protocolchanged = 0
@@ -224,16 +185,6 @@ def assemble_json(cpmmodule, existing):
                 ietfstring = '%s,' % (ietfstring)
             ietfstring = '%s"assettag": "%s"' % (ietfstring, localassettag)
 
-        if (localsiteid is not None):
-            if (len(ietfstring) > 0):
-                ietfstring = '%s,' % (ietfstring)
-            ietfstring = '%s"siteid": "%s"' % (ietfstring, localsiteid)
-
-        if (localdomain is not None):
-            if (len(ietfstring) > 0):
-                ietfstring = '%s,' % (ietfstring)
-            ietfstring = '%s"domain": "%s"' % (ietfstring, localdomain)
-
         json_load = '{"unitid": {'
         json_load = '%s%s' % (json_load, ietfstring)
         json_load = '%s}}' % (json_load)
@@ -247,13 +198,11 @@ def run_module():
     # the module
     module_args = dict(
         cpm_url=dict(type='str', required=True),
-        cpm_username=dict(type='str', required=False),
+        cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
         hostname=dict(type='str', required=False, default=None),
         location=dict(type='str', required=False, default=None),
         assettag=dict(type='str', required=False, default=None),
-        siteid=dict(type='str', required=False, default=None),
-        domain=dict(type='str', required=False, default=None),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
         use_proxy=dict(type='bool', default=False)
@@ -266,24 +215,19 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
-    if (len(to_native(module.params['cpm_username'])) > 0):
-        auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
-                       errors='surrogate_or_strict')))
-        header = {'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth}
-    else:
-        header = {'Content-Type': 'application/json', 'X-WTI-API-KEY': "%s" % (to_native(module.params['cpm_password']))}
+    auth = to_text(base64.b64encode(to_bytes('{0}:{1}'.format(to_native(module.params['cpm_username']), to_native(module.params['cpm_password'])),
+                   errors='surrogate_or_strict')))
 
     if module.params['use_https'] is True:
         protocol = "https://"
     else:
         protocol = "http://"
 
-    fullurl = ("%s%s/api/v2%s/config/hostname" % (protocol, to_native(module.params['cpm_url']),
-               "" if len(to_native(module.params['cpm_username'])) else "/token"))
+    fullurl = ("%s%s/api/v2/config/hostname" % (protocol, to_native(module.params['cpm_url'])))
     method = 'GET'
     try:
         response = open_url(fullurl, data=None, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                            headers=header)
+                            headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
 
     except HTTPError as e:
         fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)
@@ -306,13 +250,12 @@ def run_module():
             result['changed'] = True
     else:
         if payload is not None:
-            fullurl = ("%s%s/api/v2%s/config/hostname" % (protocol, to_native(module.params['cpm_url']),
-                       "" if len(to_native(module.params['cpm_username'])) else "/token"))
+            fullurl = ("%s%s/api/v2/config/hostname" % (protocol, to_native(module.params['cpm_url'])))
             method = 'POST'
 
             try:
                 response = open_url(fullurl, data=payload, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                                    headers=header)
+                                    headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
 
             except HTTPError as e:
                 fail_json = dict(msg='POST: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)

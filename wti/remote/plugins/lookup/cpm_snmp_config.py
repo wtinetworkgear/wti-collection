@@ -31,9 +31,9 @@ module: cpm_snmp_config
 version_added: "2.10.0"
 author:
     - "Western Telematic Inc. (@wtinetworkgear)"
-short_description: Set network SNMP parameters in WTI OOB and PDU devices
+short_description: Set network IPTables parameters in WTI OOB and PDU devices
 description:
-    - "Set network SNMP parameters in WTI OOB and PDU devices"
+    - "Set network IPTables parameters in WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
@@ -91,7 +91,6 @@ options:
             - eth1
             - ppp0
             - qmimux0
-        type: str
     readonly:
         description:
             - Controls the ability to change configuration parameters with SNMP.
@@ -184,7 +183,7 @@ notes:
 EXAMPLES = """
 # Sets the device SNMP Parameters
 - name: Set the an SNMP Parameter for a WTI device
-  cpm_snmp_config:
+  cpm_iptables_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -201,7 +200,7 @@ EXAMPLES = """
 
 # Sets the device SNMP Parameters
 - name: Set the SNMP Parameters a WTI device
-  cpm_snmp_config:
+  cpm_iptables_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -246,6 +245,7 @@ data:
                 "privproto": "0", "index": "1" }]}}}]
 """
 
+from collections import OrderedDict
 import base64
 import json
 

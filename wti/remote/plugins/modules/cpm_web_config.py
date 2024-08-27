@@ -192,7 +192,6 @@ data:
   returned: always
   type: complex
   contains:
-  contains:
     trace:
       description: Current state of TRACE requests for the Web Server.
       returned: success
@@ -217,7 +216,7 @@ data:
       description: Current k/v pairs of Web info for the WTI device after module execution.
       returned: always
       type: dict
-        sample: "web": [{"name":"eth0", "httpenable": "1", "httpport": "80", "httpsenable": "1", "httpsport": "443", "harden": "2",
+      sample: [{"name":"eth0", "httpenable": "1", "httpport": "80", "httpsenable": "1", "httpsport": "443", "harden": "2",
               "tlsmode": "2", "hsts": "0" }]
 """
 
@@ -437,7 +436,7 @@ def run_module():
         httpsport=dict(type='int', required=False),
         harden=dict(type='int', required=False, choices=[0, 1, 2]),
         tlsmode=dict(type='int', required=False, choices=[0, 1, 2, 3]),
-        hsts=dict(type='int', required=False),
+        hsts=dict(type='int', required=False, choices=[0, 1]),
         private_filename=dict(type='str', required=False),
         signed_filename=dict(type='str', required=False),
         inter_filename=dict(type='str', required=False),

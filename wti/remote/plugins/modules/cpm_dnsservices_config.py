@@ -128,10 +128,10 @@ data:
       returned: always
       type: dict
       sample: {"servers": [
-              {"dnsserver1": [	{"ip": "166.216.138.41"}],
-               "dnsserver2": [	{"ip": "166.216.138.42"}],
-               "dnsserver3": [	{"ip": "8.8.8.8"}],
-               "dnsserver4": [	{"ip": ""}]}]}
+              {"dnsserver1": [{"ip": "166.216.138.41"}],
+               "dnsserver2": [{"ip": "166.216.138.42"}],
+               "dnsserver3": [{"ip": "8.8.8.8"}],
+               "dnsserver4": [{"ip": ""}]}]}
 """
 
 import base64

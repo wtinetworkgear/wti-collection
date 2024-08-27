@@ -117,6 +117,8 @@ data:
 """
 
 import base64
+import json
+import datetime
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_text, to_bytes, to_native

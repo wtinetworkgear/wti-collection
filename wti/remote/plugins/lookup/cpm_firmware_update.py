@@ -151,12 +151,15 @@ import base64
 import os
 import json
 import tempfile
+import traceback
+import shutil
 import requests
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_text, to_bytes, to_native
 from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
 from ansible.module_utils.urls import open_url, ConnectionError, SSLValidationError
+from ansible.module_utils.urls import fetch_url, url_argument_spec
 
 
 def run_module():
@@ -308,9 +311,9 @@ def run_module():
                     if (family == localfilefamily):
                         local_filename = usersuppliedfilename
                     else:
-                        fail_json = dict(msg='FAIL: FAMILY MISMATCH: Your local file is a {0} type, and the device is a {1} type'
-                                             .format(("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")), changed=False)
-                        module.fail_json(**fail_json)
+                        print("FAMILY MISMATCH: Your local file is a %s type, and the device is a %s type\n\n"
+                              % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")))
+                        exit(3)
                 # SEND the file to the WTI device
                 # 3. upload new os image to WTI device
                 fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
