@@ -178,7 +178,7 @@ def assemble_json(cpmmodule, existing_interface):
 
     for x in range(0, 4):
         if (servers[x] is not None):
-            dnsservertag = "dnsserver%d" % (x+1)
+            dnsservertag = "dnsserver%d" % (x + 1)
             if (existing_interface["dnsservices"]["servers"][0][dnsservertag][0]["ip"] != servers[x]):
                 if (is_changed > 0):
                     json_load = '%s,' % (json_load)

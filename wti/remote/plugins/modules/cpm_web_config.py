@@ -529,8 +529,8 @@ def run_module():
                 method = 'POST'
 
                 try:
-                    response = open_url(fullurl, data=payload, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
-                                        headers=header)
+                    response = open_url(fullurl, data=payload, method=method, validate_certs=module.params['validate_certs'],
+                                        use_proxy=module.params['use_proxy'], headers=header)
 
                 except HTTPError as e:
                     fail_json = dict(msg='POST: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)
