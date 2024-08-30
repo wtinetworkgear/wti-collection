@@ -1,7 +1,7 @@
 .. _cpm_snmp_config_module:
 
 
-cpm_snmp_config -- Set network SNMP parameters in WTI OOB and PDU devices
+cpm_snmp_config -- Set network IPTables parameters in WTI OOB and PDU devices
 =============================================================================
 
 .. contents::
@@ -12,7 +12,7 @@ cpm_snmp_config -- Set network SNMP parameters in WTI OOB and PDU devices
 Synopsis
 --------
 
-Set network SNMP parameters in WTI OOB and PDU devices
+Set network IPTables parameters in WTI OOB and PDU devices
 
 
 
@@ -140,7 +140,7 @@ Examples
     
     # Sets the device SNMP Parameters
     - name: Set the an SNMP Parameter for a WTI device
-      cpm_snmp_config:
+      cpm_iptables_config:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
@@ -157,7 +157,7 @@ Examples
 
     # Sets the device SNMP Parameters
     - name: Set the SNMP Parameters a WTI device
-      cpm_snmp_config:
+      cpm_iptables_config:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
