@@ -1,6 +1,5 @@
-# ansible-playbook ./web_info.yml -e ansible_hosts=youransibledefinedhostnames
-# ansible-playbook ./web_info.yml -e ansible_hosts=youransibledefinedhostnames -e include_certs=True
-- name: Get Web Parameters from a WTI Device
+# ansible-playbook ./web_info.yml -e ansible_hosts=nameofhost
+- name: Get Network Web Parameters
   hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
   collections:
      - wti.remote
@@ -17,7 +16,6 @@
       cpm_url: "{{ansible_host}}"
       cpm_username: "{{ansible_user}}"
       cpm_password: "{{ansible_pw}}"
-      include_certs: "{{include_certs}}"
       use_https: "{{use_https}}"
       validate_certs: "{{validate_certs}}"
 
@@ -25,4 +23,3 @@
   - name: dump test output
     debug:
       msg: "{{ testout['data'] }}"
-

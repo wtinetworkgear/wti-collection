@@ -77,6 +77,11 @@ options:
         type: int
         required: false
         choices: [ 0, 1 ]
+    timeout:
+        description:
+            - Inactivity timeout of a user when logged into the web server (valid from 0 to 9999 minutes) 0 is no timeout.
+        type: int
+        required: false
     webterm:
         description:
             - Current state of the CLI over Web for the Web Server.
@@ -202,6 +207,11 @@ data:
       returned: success
       type: int
       sample: 1
+    timeout:
+      description: Inactivity timeout of a user. (valid from 0 to 9999 minutes) 0 is no timeout.
+      returned: success
+      type: int
+      sample: 0
     webterm:
       description: Current state of the CLI over Web for the Web Server.
       returned: success
@@ -233,7 +243,7 @@ def assemble_json(cpmmodule, existing_interface):
     is_changed = 0
     json_load = ""
     ports = None
-    web_trace = web_ocsp = web_term = None
+    web_trace = web_ocsp = web_term = web_timout = None
     web_httpenable = web_httpport = None
     web_httpsenable = web_httpsport = None
     web_harden = None
@@ -251,6 +261,9 @@ def assemble_json(cpmmodule, existing_interface):
 
     if (cpmmodule.params['ocsp'] is not None):
         web_ocsp = to_native(cpmmodule.params['ocsp'])
+
+    if (cpmmodule.params['timeout'] is not None):
+        web_timeout = to_native(cpmmodule.params['timeout'])
 
     if (cpmmodule.params['webterm'] is not None):
         web_term = to_native(cpmmodule.params['webterm'])
@@ -299,6 +312,13 @@ def assemble_json(cpmmodule, existing_interface):
         json_load = '%s, "ocsp": %s' % (json_load, web_ocsp)
     else:
         json_load = '%s,"ocsp": "%s"' % (json_load, existing_interface["ocsp"])
+
+    if (web_timeout is not None):
+        if (existing_interface["timeout"] != web_timeout):
+            is_changed = True
+        json_load = '%s, "timeout": %s' % (json_load, web_timeout)
+    else:
+        json_load = '%s,"timeout": "%s"' % (json_load, existing_interface["timeout"])
 
     if (web_term is not None):
         if (existing_interface["webterm"] != web_term):
@@ -429,6 +449,7 @@ def run_module():
         interface=dict(type="str", required=True, choices=["eth0", "eth1", "ppp0", "qmimux0"]),
         trace=dict(type='int', required=False, default=None, choices=[0, 1]),
         ocsp=dict(type='int', required=False, default=None, choices=[0, 1]),
+        timeout=dict(type='int', required=False, default=None),
         webterm=dict(type='int', required=False, default=None, choices=[0, 1]),
         httpenable=dict(type='int', required=False, choices=[0, 1]),
         httpport=dict(type='int', required=False),
