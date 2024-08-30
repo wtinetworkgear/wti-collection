@@ -5,7 +5,7 @@ WTI Collection Release Notes
 .. contents:: Topics
 
 
-v1.0.5
+v1.0.8
 ======
 
 Major Changes
@@ -13,7 +13,7 @@ Major Changes
 
 Minor Changes
 -------------
-Removed fips flag type from firmware upgrades, no longer needed
+Added DNS Server and Web information and configuration process
 
 Bugfixes
 --------
