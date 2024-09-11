@@ -1,0 +1,34 @@
+name: CI for Ansible Collection
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible and Dependencies
+        run: |
+          pip install ansible-core
+          pip install ansible-lint
+          pip install ansible-test
+
+      - name: Run ansible-lint
+        run: ansible-lint .
+
+      - name: Run ansible-test sanity
+        run: ansible-test sanity --docker --python 3.8
