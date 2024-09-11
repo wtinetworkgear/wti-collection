@@ -151,6 +151,7 @@ import base64
 import os
 import json
 import tempfile
+import re
 
 try:
     import requests
@@ -252,6 +253,12 @@ def run_module():
     statuscode = result['data']["status"]["code"]
 
     local_release_version = result['data']["config"]["firmware"]
+
+    # remove any 'alpha' or 'beta' designations if they are present)
+    match = re.match(r"^\d+(\.\d+)?", local_release_version)
+    if match:
+        local_release_version = float(match.group())
+
     try:
         family = int(result['data']["config"]["family"])
     except Exception as e:
