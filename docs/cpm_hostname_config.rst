@@ -48,12 +48,20 @@ Parameters
     Flag to control if the lookup will observe HTTP proxy environment variables when present.
 
 
-  hostname (False, str, None)
-    This is the Hostname (Site-ID) tag to be set for the WTI OOB and PDU device.
+  siteid (False, str, None)
+    This is the Site ID to be set for the WTI OOB and PDU device.
 
 
   location (False, str, None)
-    This is the Location tag to be set for the WTI OOB and PDU device.
+    This is the Location to be set for the WTI OOB and PDU device.
+
+
+  hostname (False, str, None)
+    This is the Hostname to be set for the WTI OOB and PDU device.
+
+
+  domain (False, str, None)
+    This is the Domain to be set for the WTI OOB and PDU device.
 
 
   assettag (False, str, None)

@@ -95,16 +95,24 @@ data (always, complex, )
     Current timestamp of the WTI device after module execution.
 
 
+  siteid (success, str, myhostname)
+    Current Site ID of the WTI device.
+
+
+  location (success, str, Irvine)
+    Current Location of the WTI device.
+
+
   hostname (success, str, myhostname)
-    Current Hostname (Site-ID) of the WTI device after module execution.
+    Current Hostname of the WTI device.
 
 
-  location (success, int, Irvine)
-    Current Location of the WTI device after module execution.
+  domain (success, str, myhostname)
+    Current Domain of the WTI device.
 
 
-  assettag (success, int, irvine92395)
-    Current Asset Tag of the WTI device after module execution.
+  assettag (success, str, irvine92395)
+    Current Asset Tag of the WTI device.
 
 
 
