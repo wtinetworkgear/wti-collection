@@ -1,5 +1,5 @@
 # ansible-playbook ./hostname_config.yml -e ansible_hosts=youransibledefinedhostnames
-- name: Set Hostname (Site ID), Location, Asset Tag parameters
+- name: Set SiteID, Location, Hostname, Domain and Asset Tag parameters
   hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
   collections:
      - wti.remote
@@ -18,9 +18,11 @@
       cpm_password: "{{ansible_pw}}"
       use_https: "{{use_https}}"
       validate_certs: "{{validate_certs}}"
-      hostname: "newhostname"
-      location: "newlocation"
-      assettag: "newassettag"
+      siteid:   "{{siteid}}"
+      location: "{{location}}"
+      hostname: "{{hostname}}"
+      domain:   "{{domain}}"
+      assettag: "{{assettag}}"
 
     register: testout
   - name: dump test output

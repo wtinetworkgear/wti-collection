@@ -33,7 +33,7 @@ author:
     - "Western Telematic Inc. (@wtinetworkgear)"
 short_description: Get Hostname (Site ID), Location, Asset Tag parameters in WTI OOB and PDU devices
 description:
-    - "Get Hostname (Site ID), Location, Asset Tag parameters from WTI OOB and PDU devices"
+    - "Get the SiteID, Location, Hostname, Domain and Asset Tag parameters from WTI OOB and PDU devices"
 options:
     cpm_url:
         description:
@@ -102,20 +102,30 @@ data:
       returned: success
       type: str
       sample: "2021-08-17T21:33:50+00:00"
+    siteid:
+      description: Current Site ID of the WTI device.
+      returned: success
+      type: str
+      sample: "DSMLABIRVINE"
+    location:
+      description: Current Location of the WTI device.
+      returned: success
+      type: str
+      sample: "RACK12IRVINE"
     hostname:
-      description: Current Hostname (Site-ID) of the WTI device after module execution.
+      description: Current Hostname of the WTI device.
       returned: success
       type: str
       sample: "myhostname"
-    location:
-      description: Current Location of the WTI device after module execution.
+    domain:
+      description: Current Domain of the WTI device.
       returned: success
-      type: int
-      sample: "Irvine"
+      type: str
+      sample: "mydomain.com"
     assettag:
-      description: Current Asset Tag of the WTI device after module execution.
+      description: Current Asset Tag of the WTI device.
       returned: success
-      type: int
+      type: str
       sample: "irvine92395"
 """
 

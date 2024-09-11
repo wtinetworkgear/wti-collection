@@ -69,14 +69,24 @@ options:
         type: bool
         required: false
         default: false
-    hostname:
+    siteid:
         description:
-            - This is the Hostname (Site-ID) tag to be set for the WTI OOB and PDU device.
+            - This is the Site ID to be set for the WTI OOB and PDU device.
         type: str
         required: false
     location:
         description:
-            - This is the Location tag to be set for the WTI OOB and PDU device.
+            - This is the Location to be set for the WTI OOB and PDU device.
+        type: str
+        required: false
+    hostname:
+        description:
+            - This is the Hostname to be set for the WTI OOB and PDU device.
+        type: str
+        required: false
+    domain:
+        description:
+            - This is the Domain to be set for the WTI OOB and PDU device.
         type: str
         required: false
     assettag:
@@ -97,8 +107,10 @@ EXAMPLES = """
     cpm_password: "super"
     use_https: true
     validate_certs: false
+    siteid:   "DSMLABIRVINE"
+    location: "RACK12IRVINE"
     hostname: "myhostname"
-    location: "Irvine"
+    domain:   "mydomain.com"
     assettag: "irvine92395"
 
 # Set the Hostname variable of a WTI device
@@ -123,20 +135,30 @@ data:
       returned: success
       type: str
       sample: "2021-08-17T21:33:50+00:00"
+    siteid:
+      description: Current Site ID of the WTI device.
+      returned: success
+      type: str
+      sample: "DSMLABIRVINE"
+    location:
+      description: Current Location of the WTI device.
+      returned: success
+      type: str
+      sample: "RACK12IRVINE"
     hostname:
-      description: Current Hostname (Site-ID) of the WTI device after module execution.
+      description: Current Hostname of the WTI device.
       returned: success
       type: str
       sample: "myhostname"
-    location:
-      description: Current Location of the WTI device after module execution.
+    domain:
+      description: Current Domain of the WTI device.
       returned: success
-      type: int
-      sample: "Irvine"
+      type: str
+      sample: "mydomain.com"
     assettag:
-      description: Current Asset Tag of the WTI device after module execution.
+      description: Current Asset Tag of the WTI device.
       returned: success
-      type: int
+      type: str
       sample: "irvine92395"
 """
 
@@ -153,16 +175,24 @@ def assemble_json(cpmmodule, existing):
     total_change = 0
     json_load = ietfstring = ""
 
-    localhostname = locallocation = localassettag = None
+    localsiteid = locallocation = localhostname = localdomain = localassettag = None
 
-    if cpmmodule.params["hostname"] is not None:
-        if (existing["unitid"]["hostname"] != to_native(cpmmodule.params["hostname"])):
-            total_change = (total_change | 1)
-            localhostname = to_native(cpmmodule.params["hostname"])
+    if cpmmodule.params["siteid"] is not None:
+        if (existing["unitid"]["siteid"] != to_native(cpmmodule.params["siteid"])):
+            total_change = (total_change | 8)
+            localsiteid = to_native(cpmmodule.params["siteid"])
     if cpmmodule.params["location"] is not None:
         if (existing["unitid"]["location"] != to_native(cpmmodule.params["location"])):
             total_change = (total_change | 2)
             locallocation = to_native(cpmmodule.params["location"])
+    if cpmmodule.params["hostname"] is not None:
+        if (existing["unitid"]["hostname"] != to_native(cpmmodule.params["hostname"])):
+            total_change = (total_change | 1)
+            localhostname = to_native(cpmmodule.params["hostname"])
+    if cpmmodule.params["domain"] is not None:
+        if (existing["unitid"]["domain"] != to_native(cpmmodule.params["domain"])):
+            total_change = (total_change | 16)
+            localdomain = to_native(cpmmodule.params["domain"])
     if cpmmodule.params["assettag"] is not None:
         if (existing["unitid"]["assettag"] != to_native(cpmmodule.params["assettag"])):
             total_change = (total_change | 4)
@@ -172,13 +202,23 @@ def assemble_json(cpmmodule, existing):
         protocol = protocolchanged = 0
         ietfstring = ""
 
-        if (localhostname is not None):
-            ietfstring = '%s"hostname": "%s"' % (ietfstring, localhostname)
+        if (localsiteid is not None):
+            ietfstring = '%s"siteid": "%s"' % (ietfstring, localsiteid)
 
         if (locallocation is not None):
             if (len(ietfstring) > 0):
                 ietfstring = '%s,' % (ietfstring)
             ietfstring = '%s"location": "%s"' % (ietfstring, locallocation)
+
+        if (localhostname is not None):
+            if (len(ietfstring) > 0):
+                ietfstring = '%s,' % (ietfstring)
+            ietfstring = '%s"hostname": "%s"' % (ietfstring, localhostname)
+
+        if (localdomain is not None):
+            if (len(ietfstring) > 0):
+                ietfstring = '%s,' % (ietfstring)
+            ietfstring = '%s"domain": "%s"' % (ietfstring, localdomain)
 
         if (localassettag is not None):
             if (len(ietfstring) > 0):
@@ -200,8 +240,10 @@ def run_module():
         cpm_url=dict(type='str', required=True),
         cpm_username=dict(type='str', required=True),
         cpm_password=dict(type='str', required=True, no_log=True),
-        hostname=dict(type='str', required=False, default=None),
+        siteid=dict(type='str', required=False, default=None),
         location=dict(type='str', required=False, default=None),
+        hostname=dict(type='str', required=False, default=None),
+        domain=dict(type='str', required=False, default=None),
         assettag=dict(type='str', required=False, default=None),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
