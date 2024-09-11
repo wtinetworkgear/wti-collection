@@ -33,6 +33,7 @@
 
 name: CI
 on:
+  workflow_dispatch:   # Allows manual trigger
   # Run CI against all pushes (direct commits, also merged PRs), Pull Requests
   push:
     branches:
