@@ -1,7 +1,7 @@
 # ansible-playbook ./cpm_config_backup.yml -e ansible_hosts=nameofhost
 - name: Get Device Parameters
 #  hosts: "{{ ansible_hosts }}"  # pass as -e ansible_hosts=wti_demo on the commandline
-  hosts: "{{ my_playbook_hosts | default("dbservers") }}"
+  hosts: '{{ my_playbook_hosts | default("dbservers") }}'
   collections:
      - wti.remote
   connection: local
