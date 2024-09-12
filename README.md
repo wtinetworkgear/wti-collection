@@ -43,7 +43,7 @@ Playbooks
 
 Playbooks are available on Github to interact with the WTI Ansible Collection:
 
-[Github](https://github.com/wtinetworkgear/wti-collection-playbooks)
+[WTI Ansible Collection Playbook Location.](https://github.com/wtinetworkgear/wti-collection-playbooks)
 
 
 Contribution
