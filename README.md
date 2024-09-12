@@ -38,6 +38,14 @@ The common variables that should be defined in your inventory for your WTI host 
 * `use_proxy`: Set `True` or `False` depending if Ansible should bypass environment proxies to connect to the WTI device   
 
 
+Playbooks
+--------------
+
+Playbooks are available on Github to interact with the WTI Ansible Collection:
+
+[Github](https://github.com/wtinetworkgear/wti-collection-playbooks)
+
+
 Contribution
 -------
 At WTI we're dedicated to ensuring the quality of our products, if you find any
