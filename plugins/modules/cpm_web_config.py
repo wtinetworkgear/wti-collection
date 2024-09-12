@@ -168,8 +168,8 @@ EXAMPLES = """
     use_https: true
     validate_certs: false
     private_filename: "/tmp/private.key"
-    signed_filename:  "/tmp/signed.key"
-    inter_filename:   "/tmp/intermediate.key"
+    signed_filename: "/tmp/signed.key"
+    inter_filename: "/tmp/intermediate.key"
 
 # Sets the device WEB Parameters using a User Token
 - name: Set the an WEB Parameter for a WTI device

@@ -107,10 +107,10 @@ EXAMPLES = """
     cpm_password: "super"
     use_https: true
     validate_certs: false
-    siteid:   "DSMLABIRVINE"
+    siteid: "DSMLABIRVINE"
     location: "RACK12IRVINE"
     hostname: "myhostname"
-    domain:   "mydomain.com"
+    domain: "mydomain.com"
     assettag: "irvine92395"
 
 # Set the Hostname variable of a WTI device

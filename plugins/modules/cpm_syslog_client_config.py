@@ -127,15 +127,15 @@ EXAMPLES = """
     validate_certs: false
     protocol: 0
     index:
-        - 1
+      - 1
     address:
-        - "11.22.33.44"
+      - "11.22.33.44"
     port:
-        - 555
+      - 555
     transport:
-        - 1
+      - 1
     secure:
-        - 0
+      - 0
 
 # Sets the device SYSLOG Client Parameters
 - name: Set the SYSLOG Client Parameters a WTI device
@@ -147,20 +147,20 @@ EXAMPLES = """
     validate_certs: false
     protocol: 0
     index:
-        - 1
-        - 2
+      - 1
+      - 2
     address:
-        - "11.22.33.44"
-        - "55.66.77.88"
+      - "11.22.33.44"
+      - "55.66.77.88"
     port:
-        - 555
-        - 557
+      - 555
+      - 557
     transport:
-        - 1
-        - 0
+      - 1
+      - 0
     secure:
-        - 0
-        - 1
+      - 0
+      - 1
 """
 
 RETURN = """

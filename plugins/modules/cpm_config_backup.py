@@ -78,7 +78,7 @@ notes:
 """
 
 EXAMPLES = """
--   name: Get the Parameters for a WTI device
+- name: Get the Parameters for a WTI device
     cpm_config_backup:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
