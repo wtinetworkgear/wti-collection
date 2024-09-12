@@ -13,3 +13,7 @@
         use_https: "{{ use_https }}"
         validate_certs: "{{ validate_certs }}"
       register: testout
+
+    - name: dump test output
+      ansible.builtin.debug:
+        msg: "{{ testout['data'] }}"      
