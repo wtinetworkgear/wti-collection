@@ -1,7 +1,6 @@
-requires:
-  ansible:
-    versions:
-      - '>=2.15.0'
+requires_ansible:
+  versions:
+    - '>=2.15.0'
 
 action_groups:
   cpm:
