@@ -6,10 +6,10 @@
 
   tasks:
   - name: Run Set Device Parameters
-    wti.remote.cpm_config_restore:
-      cpm_url: "{{ansible_host}}"
-      cpm_username: "{{ansible_user}}"
-      cpm_password: "{{ansible_pw}}"
-      cpm_filename: "wti-192-10-10-239-2020-02-13T16-17-22-xml"
-      use_https: "{{use_https}}"
-      validate_certs: "{{validate_certs}}"
+      wti.remote.cpm_config_restore:
+        cpm_url: "{{ansible_host}}"
+        cpm_username: "{{ansible_user}}"
+        cpm_password: "{{ansible_pw}}"
+        cpm_filename: "wti-192-10-10-239-2020-02-13T16-17-22-xml"
+        use_https: "{{use_https}}"
+        validate_certs: "{{validate_certs}}"
