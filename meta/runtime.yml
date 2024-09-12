@@ -1,6 +1,4 @@
-requires_ansible:
-  versions:
-    - '>=2.15.0'
+requires_ansible: ">=2.15.0"
 
 action_groups:
   cpm:
@@ -8,8 +6,6 @@ action_groups:
   - cpm_config_backup
   - cpm_config_restore
   - cpm_current_info
-  - cpm_dnsservices_config
-  - cpm_dnsservices_info
   - cpm_firmware_info
   - cpm_firmware_update
   - cpm_hostname_config
