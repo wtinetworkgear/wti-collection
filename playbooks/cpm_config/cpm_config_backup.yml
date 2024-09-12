@@ -1,7 +1,8 @@
 # ansible-playbook ./cpm_config_backup.yml
 - name: Get Device Parameters
   hosts: all
-  collections: wti.remote
+  collections: 
+    - wti.remote
   connection: local
   gather_facts: False
   
