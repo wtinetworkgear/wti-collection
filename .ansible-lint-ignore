@@ -1,1 +1,4 @@
 cpm_config_backup.yml ignore-errors
+cpm_config_backup.yml avoid-implicit
+playbooks/cpm_config_backup.yml ignore-errors
+playbooks/cpm_config_backup.yml avoid-implicit
