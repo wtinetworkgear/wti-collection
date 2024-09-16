@@ -1,6 +1,0 @@
-playbooks/cpm_config/cpm_config_backup.yml ignore-errors
-playbooks/cpm_config/cpm_config_backup.yml avoid-implicit
-playbooks/cpm_config/cpm_config_backup.yml syntax-check
-cpm_config_backup.yml ignore-errors
-cpm_config_backup.yml avoid-implicit
-cpm_config_backup.yml syntax-check
