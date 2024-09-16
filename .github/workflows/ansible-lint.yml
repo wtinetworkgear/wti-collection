@@ -14,4 +14,4 @@ jobs:
         uses: ansible/ansible-lint@main # or version tag instead of 'main'
         with:
           exclude_paths: |
-            ../../playbooks/        
+            playbooks/
