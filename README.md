@@ -41,7 +41,7 @@ The common variables that should be defined in your inventory for your WTI host 
 Playbooks
 --------------
 
-Playbooks are available on Github to interact with the WTI Ansible Collection:
+Playbooks are also available separately on Github to interact with the WTI Ansible Collection:
 
 [WTI Ansible Collection Playbook Location.](https://github.com/wtinetworkgear/wti-collection-playbooks)
 
