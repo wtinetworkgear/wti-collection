@@ -1,7 +1,9 @@
-../../playbooks/cpm_config_backup.yml ignore-errors
-../../playbooks/cpm_config_backup.yml avoid-implicit
+../../playbooks/cpm_config/cpm_config_backup.yml ignore-errors
+../../playbooks/cpm_config/cpm_config_backup.yml avoid-implicit
+../../playbooks/cpm_config/cpm_config_backup.yml var-naming[no-role-prefix]
 cpm_config_backup.yml ignore-errors
 cpm_config_backup.yml avoid-implicit
-../../playbooks/cpm_config_backup.yml
-../../playbooks/cpm_config_backup.yml
+cpm_config_backup.yml var-naming[no-role-prefix]
+../../playbooks/cpm_config/cpm_config_backup.yml
+../../playbooks/cpm_config/cpm_config_backup.yml
 ../../playbooks/
