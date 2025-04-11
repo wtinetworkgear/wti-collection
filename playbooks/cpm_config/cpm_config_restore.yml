@@ -1,5 +1,5 @@
 #code: language=ansible
-# ansible-playbook ./cpm_config_restore.yml -e ansible_hosts=nameofhost
+# ansible-playbook ./cpm_config_restore.yml -e ansible_hosts=nameofhost -e cpm_filename=myfilename
 - name: Set Device Parameters
   hosts: "{{ansible_hosts}}"  # pass as -e ansible_hosts=wti_demo on the commandline
   collections:
