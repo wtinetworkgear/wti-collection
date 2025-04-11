@@ -8,7 +8,7 @@
   gather_facts: False
 
   tasks:
-  - set_fact: use_https=False
+  - set_fact: use_https=True
     when: use_https is undefined
   - set_fact: validate_certs=False
     when: validate_certs is undefined
