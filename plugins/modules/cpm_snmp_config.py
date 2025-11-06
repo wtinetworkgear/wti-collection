@@ -465,35 +465,35 @@ def assemble_json(cpmmodule, existing_interface):
     if (snmpsystemname is not None):
         if (existing_interface["snmpaccess"][ports][0][ietfstring]["systemname"] != snmpsystemname):
             is_changed = True
-        json_load = '%s, "systemname": %d' % (json_load, snmpsystemname)
+        json_load = '%s, "systemname": %s' % (json_load, snmpsystemname)
     else:
         json_load = '%s,"systemname": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["systemname"])
 
     if (snmpcontact is not None):
         if (existing_interface["snmpaccess"][ports][0][ietfstring]["contact"] != snmpcontact):
             is_changed = True
-        json_load = '%s, "contact": %d' % (json_load, snmpcontact)
+        json_load = '%s, "contact": %s' % (json_load, snmpcontact)
     else:
         json_load = '%s,"contact": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["contact"])
 
     if (snmplocation is not None):
         if (existing_interface["snmpaccess"][ports][0][ietfstring]["location"] != snmplocation):
             is_changed = True
-        json_load = '%s, "location": %d' % (json_load, snmplocation)
+        json_load = '%s, "location": %s' % (json_load, snmplocation)
     else:
         json_load = '%s,"location": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["location"])
 
     if (snmprocommunity is not None):
         if (existing_interface["snmpaccess"][ports][0][ietfstring]["rocommunity"] != snmprocommunity):
             is_changed = True
-        json_load = '%s, "rocommunity": %d' % (json_load, snmprocommunity)
+        json_load = '%s, "rocommunity": %s' % (json_load, snmprocommunity)
     else:
         json_load = '%s,"rocommunity": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["rocommunity"])
 
     if (snmprwcommunity is not None):
         if (existing_interface["snmpaccess"][ports][0][ietfstring]["rwcommunity"] != snmprwcommunity):
             is_changed = True
-        json_load = '%s, "rwcommunity": %d' % (json_load, snmprwcommunity)
+        json_load = '%s, "rwcommunity": %s' % (json_load, snmprwcommunity)
     else:
         json_load = '%s,"rwcommunity": "%s"' % (json_load, existing_interface["snmpaccess"][ports][0][ietfstring]["rwcommunity"])
 
