@@ -69,7 +69,7 @@ notes:
 """
 
 EXAMPLES = """
-- name: Get the network IPTABLES Parameters for a WTI device.
+- name: Get the Network DNS Services for a WTI device.
   cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
@@ -77,7 +77,7 @@ EXAMPLES = """
     use_https: true
     validate_certs: false
 
-- name: Get the network IPTABLES Parameters for a WTI device using a User Token.
+- name: Get the Network DNS Services for a WTI device using a User Token.
   cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: ""
@@ -85,7 +85,7 @@ EXAMPLES = """
     use_https: true
     validate_certs: false
 
-- name: Get the network IPTABLES Parameters for a WTI device.
+- name: Get the Network DNS Services for a WTI device.
   cpm_interface_info:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
