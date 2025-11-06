@@ -73,7 +73,7 @@ Examples
 
     
     - name: Get the network SYSLOG Client Parameters for all interfaces of a WTI device.
-      cpm_interface_info:
+      cpm_syslog_client_info:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
@@ -82,7 +82,7 @@ Examples
 
 
     - name: Get the network SYSLOG Client Parameters for eth0 of a WTI device.
-      cpm_interface_info:
+      cpm_syslog_client_info:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
