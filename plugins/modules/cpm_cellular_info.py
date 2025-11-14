@@ -109,7 +109,7 @@ data:
       description: Current k/v pairs of Wake up on Failure info of the WTI device.
       returned: always
       type: dict
-      sample: {"enabled": "0", "active": "0", "autorecov": "0", "autorecov": "0", "gatewayport": "0",
+      sample: {"enabled": "0", "active": "0", "autorecov": "0", "gatewayport": "0",
               "sleepmode": "0", "singlepingaddfail": "0", "interfacemon": "0", "host1": "", "host2": "",
               "pinginter1": "60", "afppinginter1": "10", "conscfail1": "5", "gatewayaddr": ""}
     passth:
