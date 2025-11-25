@@ -140,7 +140,7 @@ Examples
     
     # Sets the device SNMP Parameters
     - name: Set the an SNMP Parameter for a WTI device
-      cpm_iptables_config:
+      cpm_snmp_config:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"
@@ -157,7 +157,7 @@ Examples
 
     # Sets the device SNMP Parameters
     - name: Set the SNMP Parameters a WTI device
-      cpm_iptables_config:
+      cpm_snmp_config:
         cpm_url: "nonexist.wti.com"
         cpm_username: "super"
         cpm_password: "super"

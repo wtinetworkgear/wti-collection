@@ -160,7 +160,7 @@ notes:
 EXAMPLES = """
 # Sets the device WEB Parameters
 - name: Set the an WEB Parameter for a WTI device
-  cpm_snmp_config:
+  cpm_web_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
@@ -173,7 +173,7 @@ EXAMPLES = """
 
 # Sets the device WEB Parameters using a User Token
 - name: Set the an WEB Parameter for a WTI device
-  cpm_snmp_config:
+  cpm_web_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: ""
     cpm_password: "randomusertokenfromthewtidevice"
@@ -183,7 +183,7 @@ EXAMPLES = """
 
 # Sets the device WEB Parameters
 - name: Set the WEB Parameters a WTI device
-  cpm_snmp_config:
+  cpm_web_config:
     cpm_url: "nonexist.wti.com"
     cpm_username: "super"
     cpm_password: "super"
