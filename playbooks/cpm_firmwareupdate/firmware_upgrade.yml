@@ -11,6 +11,17 @@
     when: use_https is undefined
   - set_fact: validate_certs=False
     when: validate_certs is undefined
+  - set_fact: use_force=False
+    when: use_force is undefined
+  - set_fact: ignoreincremental=0
+    when: ignoreincrement is undefined
+  - set_fact: removefileonexit=1
+    when: removefileonexit is undefined
+  - set_fact: bootafterincremental=1
+    when: bootafterincremental is undefined
+  - set_fact: 
+      max_console_version: null
+    when: max_console_version is undefined
 
   - name: upgrade WTI device checking online for new version
     cpm_firmware_update:
@@ -18,6 +29,11 @@
       cpm_username: "{{ansible_user}}"
       cpm_password: "{{ansible_pw}}"
       use_https: "{{use_https}}"
+      use_force: "{{use_force}}"
+      ignoreincremental: "{{ignoreincremental}}"
+      removefileonexit: "{{removefileonexit}}"
+      bootafterincremental: "{{bootafterincremental}}"
+      max_console_version:  "{{max_console_version}}"
       validate_certs: "{{validate_certs}}"
       cpm_path: "/tmp/"
       # when cpm_file is missing, the playbook will look online for the latest version
