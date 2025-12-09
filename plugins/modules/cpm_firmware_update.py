@@ -98,6 +98,30 @@ options:
         type: int
         default: 1
         choices: [ 0, 1 ]
+    ignoreincremental:
+        description:
+            - If there are any incremental upgrades, do not install them
+        required: false
+        type: int
+        default: 0
+        choices: [ 0, 1 ]
+    bootafterincremental:
+        description:
+            - If set to 1, the WTI device will reboot after an incremental update is sucessfully uploaded
+        required: false
+        type: int
+        default: 1
+        choices: [ 0, 1 ]
+    max_console_version:
+        description:
+            - If defined, this will be the maximum version that will be searched for all console units
+        required: false
+        type: float
+    max_power_version:
+        description:
+            - If defined, this will be the maximum version that will be searched for all power units
+        required: false
+        type: float
 
 notes:
     - Use C(groups/cpm) in C(module_defaults) to set common options used between CPM modules.
@@ -152,6 +176,7 @@ import os
 import json
 import tempfile
 import re
+import time
 
 try:
     import requests
@@ -175,6 +200,10 @@ def run_module():
         cpm_file=dict(type='str', default=None),
         family=dict(type='int', default=1, choices=[0, 1]),
         removefileonexit=dict(type='int', default=1, choices=[0, 1]),
+        ignoreincremental=dict(type='int', default=0, choices=[0, 1]),
+        bootafterincremental=dict(type='int', default=1, choices=[0, 1]),
+        max_console_version=dict(type='float', default=None),
+        max_power_version=dict(type='float', default=None),
         use_force=dict(type='bool', default=False),
         use_https=dict(type='bool', default=True),
         validate_certs=dict(type='bool', default=True),
@@ -191,8 +220,11 @@ def run_module():
     usersuppliedfilename = None
     forceupgrade = False
     localfilefamily = -1
+    ignoreincremental = 0
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
+
+    verbosity = module._verbosity
 
     if HAS_REQUESTS_LIBRARY is False:
         fail_json = dict(msg='IMPORT: requests import not installed', changed=False)
@@ -203,6 +235,9 @@ def run_module():
 
     if module.params['use_force'] is True:
         forceupgrade = True
+
+    if (int(module.params['ignoreincremental']) > 0):
+        ignoreincremental = 1
 
     # if a local file was defined lets see what family it is: Console or Power
     if (usersuppliedfilename is not None):
@@ -215,8 +250,17 @@ def run_module():
                 localfilefamily = 1
             elif (fileread.find(b"VMR") >= 0):
                 localfilefamily = 0
+            elif (fileread.find(b"INCUPDATE") >= 0):
+                localfilefamily = 2
+                module.warn("INC UPDATE type., versions need to match")
+
             file.close()
-#        print("User Supplied file [%s] is a %s type." %(usersuppliedfilename, ("Console" if localfilefamily == 1 else "Power")))
+
+            if (localfilefamily == 2):
+                module.warn("User Supplied file [%s] is a Incremental type." % (usersuppliedfilename,))
+            else:
+                module.warn("User Supplied file [%s] is a %s type." % (usersuppliedfilename, ("Console" if localfilefamily == 1 else "Power")))
+
         except Exception as e:
             fail_json = dict(msg='FILE: User Supplied file {0} does not exist : {1}'.format(usersuppliedfilename, to_native(e)), changed=False)
             module.fail_json(**fail_json)
@@ -252,6 +296,23 @@ def run_module():
     result['data'] = json.loads(response.read())
     statuscode = result['data']["status"]["code"]
 
+    try:
+        # Extract incremental array
+        local_incremental_list = result['data']["config"]["incremental"]
+
+        if (verbosity):
+            # Print or use the list
+            module.warn("1A. local_incremental_list  [%s]." % (local_incremental_list))
+
+            for item in local_incremental_list:
+                module.warn("2A. item['title']  [%s]." % (item["title"]))
+                module.warn("3A. item['vpart']  [%s], item['vinc']: [%s]." % (item["vpart"], item["vinc"]))
+
+    except Exception as e:
+        local_incremental_list = ""
+        if (verbosity):
+            module.warn("EXCEPTION 1 %s" % (str(e)))
+
     local_release_version = result['data']["config"]["firmware"]
 
     # remove any 'alpha' or 'beta' designations if they are present)
@@ -264,16 +325,26 @@ def run_module():
     except Exception as e:
         family = 1
 
-#    print("Device reports Version: %s, Family: %s\n" % (local_release_version, ("Console" if family == 1 else "Power")))
     if (localfilefamily != -1):
         if (family != localfilefamily):
-            fail_json = dict(msg='FAMILY MISMATCH: Your local file is a: %s type, the device is a %s type'
-                             % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power")), changed=False)
+            fail_json = dict(msg='FAMILY MISMATCH: Your local file is a: %s type, the device is a %s type, localfilefamily: (%d)'
+                             % (("Console" if localfilefamily == 1 else "Power"), ("Console" if family == 1 else "Power"), localfilefamily), changed=False)
             module.fail_json(**fail_json)
 
+    versioncap = ""
+    if (family == 2):
+        if module.params['max_power_version'] is not None:
+            if (float(module.params['max_power_version']) > 0):
+                versioncap = ("&versioncap=%s" % (module.params['max_power_version']))
+    else:
+        if module.params['max_console_version'] is not None:
+            if (float(module.params['max_console_version']) > 0):
+                versioncap = ("&versioncap=%s" % (module.params['max_console_version']))
+
     # 2. Go online and find the latest version of the os image for this device family
+    wti_incremental_list = ""
     if (localfilefamily == -1):
-        fullurl = ("https://my.wti.com/update/version.aspx?fam=%s" % (family))
+        fullurl = ("https://my.wti.com/update/version.aspx?fam=%s%s" % (family, versioncap))
 
         method = 'GET'
         try:
@@ -296,30 +367,193 @@ def run_module():
         result['data'] = json.loads(response.read())
         remote_release_version = result['data']["config"]["firmware"]
 
+        if module.params['max_console_version'] is not None:
+            if (float(module.params['max_console_version']) > 0):
+                if (float(module.params['max_console_version']) < (float(remote_release_version))):
+                    remote_release_version = float(module.params['max_console_version'])
+
+        # if the local version is less than the online latest version ignore all incremental upgrades
+        wti_incremental_total = 0
+
+        if ((float(local_release_version)) == (float(remote_release_version))):
+            if (((float(local_release_version) < 8.09) & (family == 1)) | ((float(local_release_version) < 4.05) & (family == 0))):
+                ignoreincremental = 1
+            try:
+                if (ignoreincremental == 0):
+                    # Extract incremental array
+                    wti_incremental_list = result['data']["config"]["incremental"]
+                    if (verbosity):
+                        module.warn("wti_incremental_list size (%d)" % (len(wti_incremental_list)))
+
+                    # Print or use the list
+                    if (verbosity):
+                        module.warn("1B. local_release_version  [%s]." % (wti_incremental_list))
+                        module.warn("1B. local_incremental_list  [%s]." % (local_incremental_list))
+
+                        # Loop through the my.wti.com complete incremental available updates
+                        module.warn("1c. length wti_incremental_list  (%d)." % (len(wti_incremental_list)))
+                        module.warn("1c. length local_incremental_list (%d)." % (len(local_incremental_list)))
+
+                    new_wti_list = []
+                    for item_wti in wti_incremental_list:
+                        matched = False
+                        if (verbosity):
+                            module.warn("loop item_wti item_wti['title']:   [%s], item_wti['vpart']:   (%d), item_wti['vinc']: (%d)"
+                                        % (item_wti["title"], int(item_wti['vpart']), int(item_wti['vinc'])))
+
+                        if (len(local_incremental_list) > 0):
+                            for item_local in local_incremental_list:
+                                if (verbosity):
+                                    module.warn("   -> COMPARE item_local['title']  [%s], item_local['vpart']: (%d), item_local['vinc']: (%d)"
+                                                % (item_local["title"], int(item_local['vpart']), int(item_local['vinc'])))
+                                    module.warn("   -> AND     item_wti['title']    [%s], item_wti['vpart']:   (%d), item_wti['vinc']:   (%d)"
+                                                % (item_wti["title"], int(item_wti['vpart']), int(item_wti['vinc'])))
+
+                                if (int(item_local['vpart']) == int(item_wti['vpart'])):
+                                    matched = True
+                                    if int(item_wti['vinc']) > int(item_local['vinc']):
+                                        if (verbosity):
+                                            module.warn(
+                                                "-> 1. New version online item_local['title'] [%s], "
+                                                "item_local['vpart']: (%d), item_local['vinc']: (%d)"
+                                                % (
+                                                    item_local["title"], int(item_local["vpart"]), int(item_local["vinc"]),
+                                                )
+                                            )
+
+                                            module.warn(
+                                                "-> 1. New version online item_wti['title'] [%s], "
+                                                "item_wti['vpart']: (%d), item_wti['vinc']: (%d)"
+                                                % (
+                                                    item_wti["title"], int(item_wti["vpart"]), int(item_wti["vinc"]),
+                                                )
+                                            )
+
+                                        new_wti_list.append(item_wti)
+                                        matched = True
+                                        break
+                            if not matched:
+                                if (verbosity):
+                                    module.warn("   -> NO - MATCH/DELETE item_local['title']    [%s], item_local['vpart']:   (%d), item_local['vinc']: (%d)"
+                                                % (item_local["title"], int(item_local['vpart']), int(item_local['vinc'])))
+                                    module.warn("   -> NO - MATCH/DELETE item_wti['title']    [%s], item_wti['vpart']:   (%d), item_wti['vinc']: (%d)"
+                                                % (item_wti["title"], int(item_wti['vpart']), int(item_wti['vinc'])))
+                                new_wti_list.append(item_wti)
+                        else:
+                            if (verbosity):
+                                module.warn("   -> 2. New version online item_wti['title']    [%s], item_wti['vpart']:   (%d), item_wti['vinc']: (%d)"
+                                            % (item_wti["title"], int(item_wti['vpart']), int(item_wti['vinc'])))
+                            new_wti_list.append(item_wti)
+                    # Replace the original list with the filtered one
+                    wti_incremental_list = new_wti_list
+
+            except Exception as e:
+                wti_incremental_list = ""
+                if (verbosity):
+                    module.warn("EXCEPTION 2 %s." % (str(e)))
+
         if ((float(local_release_version) < 6.58) & (family == 1)) | ((float(local_release_version) < 2.15) & (family == 0)):
             fail_json = dict(msg='ERROR: WTI Device does not support remote upgrade', changed=False)
             module.fail_json(**fail_json)
-
         statuscode = result['data']['status']['code']
     else:
         remote_release_version = 0
 
+    wti_incremental_total = len(wti_incremental_list)
+
+    if (verbosity):
+        module.warn("Number of items in wti_incremental_list: %d" % len(wti_incremental_list))
+
+    if (verbosity):
+        if (wti_incremental_total > 0):
+            for item_wti in wti_incremental_list:
+                module.warn("4a. item_wti['title']  [%s], item_wti['vpart']: (%d)" % (item_wti["title"], int(item_wti['vpart'])))
+                module.warn("4a. item_wti['imageurl']  [%s], item_wti['vinc']: (%d)" % (item_wti["imageurl"], int(item_wti['vinc'])))
+
+    INCString = INCTitle = ""
+    INCPart = is_incremental = 0
     if (int(statuscode) == 0):
         local_filename = None
-        if ((float(local_release_version) < float(remote_release_version)) or (forceupgrade == 1)) or (localfilefamily >= 0):
+        if ((float(local_release_version) < float(remote_release_version)) or (forceupgrade == 1)) or (localfilefamily >= 0) or (wti_incremental_total > 0):
             if (module.check_mode is False):
                 if (localfilefamily == -1):
-                    online_file_location = result['data']["config"]["imageurl"]
+                    INCPart = 0
+                    while wti_incremental_total != -1:
+                        time.sleep(5)
 
-                    local_filename = online_file_location[online_file_location.rfind("/") + 1:]
-                    local_filename = tempfile.gettempdir() + "/" + local_filename
+                        if (wti_incremental_total == 0):
+                            online_file_location = result['data']["config"]["imageurl"]
+                            wti_incremental_total = -1  # only go through one time
+                        else:
+                            is_incremental = is_incremental + 1
+                            online_file_location = wti_incremental_list[0]['imageurl']
+                            INCPart = int(wti_incremental_list[0]['vpart'])
+                            INCTitle = (wti_incremental_list[0]['title'])
+                            wti_incremental_total = wti_incremental_total - 1
+                            wti_incremental_list.remove(wti_incremental_list[0])
 
-                    response = requests.get(online_file_location, stream=True)
-                    handle = open(local_filename, "wb")
-                    for chunk in response.iter_content(chunk_size=512):
-                        if chunk:  # filter out keep-alive new chunks
-                            handle.write(chunk)
-                    handle.close()
+                            if (wti_incremental_total == 0):
+                                wti_incremental_total = -1  # Done with loop
+
+                        local_filename = online_file_location[online_file_location.rfind("/") + 1:]
+                        local_filename = tempfile.gettempdir() + "/" + local_filename
+
+                        response = requests.get(online_file_location, stream=True)
+                        handle = open(local_filename, "wb")
+                        for chunk in response.iter_content(chunk_size=512):
+                            if chunk:  # filter out keep-alive new chunks
+                                handle.write(chunk)
+                        handle.close()
+
+                        # SEND the file to the WTI device
+                        # 3. upload new os image to WTI device
+                        fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
+                        files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
+
+                        try:
+                            response = requests.post(fullurl, files=files, auth=(to_native(module.params['cpm_username']),
+                                                     to_native(module.params['cpm_password'])), verify=(module.params['validate_certs']), stream=True)
+                            result['data'] = response.json()
+                            if (verbosity):
+                                module.warn("    Data return:  [%s]" % (result['data']))
+
+                            # Is it an incremental upgrade
+                            if (is_incremental > 0):
+                                if (len(INCString) > 0):
+                                    INCString = INCString + ","
+
+                                INCString = (
+                                    "%s{ 'title': '%s', 'vpart': %d, 'code': '%s', 'filelength': '%s' }"
+                                    % (
+                                        INCString,
+                                        INCTitle,
+                                        INCPart,
+                                        result['data']['status']['code'],
+                                        result['data']['filelength'],
+                                    )
+                                )
+
+                                if (verbosity):
+                                    module.warn("INCString [%s]" % (INCString))
+
+                            if (response.status_code == 200):
+                                if (int(result['data']['status']['code']) == 0):
+                                    result['changed'] = True
+                                    if (len(INCString)):
+                                        result['data'] = "{'incremental': [" + INCString + "]}"
+                                else:
+                                    fail_json = dict(msg='FAIL: Upgrade Failed for {0}'.format(fullurl), changed=False)
+                                    module.fail_json(**fail_json)
+
+                        except requests.exceptions.RequestException as e:  # This is the correct syntax
+                            fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)
+                            module.fail_json(**fail_json)
+
+                        # only remove if the file was downloaded
+                        if (localfilefamily == -1):
+                            if (int(module.params['removefileonexit']) == 1):
+                                os.remove(local_filename)
+
                 else:
                     if (family == localfilefamily):
                         local_filename = usersuppliedfilename
@@ -327,35 +561,52 @@ def run_module():
                         module.log(msg="FAMILY MISMATCH: Your local file and the device do not match family types.")
                         fail_json = dict(msg='FAIL: (3) Upgrade Failed for {0}'.format(fullurl), changed=False)
                         module.fail_json(**fail_json)
-                # SEND the file to the WTI device
-                # 3. upload new os image to WTI device
-                fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
-                files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
 
-                try:
-                    response = requests.post(fullurl, files=files, auth=(to_native(module.params['cpm_username']),
-                                             to_native(module.params['cpm_password'])), verify=(module.params['validate_certs']), stream=True)
-                    result['data'] = response.json()
+                    # SEND the file to the WTI device
+                    # 3. upload new os image to WTI device
+                    fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
+                    files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
 
-                    if (response.status_code == 200):
-                        if (int(result['data']['status']['code']) == 0):
-                            result['changed'] = True
-                        else:
-                            fail_json = dict(msg='FAIL: Upgrade Failed for {0}'.format(fullurl), changed=False)
-                            module.fail_json(**fail_json)
+                    if (verbosity):
+                        module.warn("fullurl [%s]" % (fullurl))
 
-                except requests.exceptions.RequestException as e:  # This is the correct syntax
-                    fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)
-                    module.fail_json(**fail_json)
+                    try:
+                        response = requests.post(fullurl, files=files, auth=(to_native(module.params['cpm_username']),
+                                                 to_native(module.params['cpm_password'])), verify=(module.params['validate_certs']), stream=True)
+                        result['data'] = response.json()
 
-                # only remove if the file was downloaded
-                if (localfilefamily == -1):
-                    if (int(module.params['removefileonexit']) == 1):
-                        os.remove(local_filename)
+                        if (response.status_code == 200):
+                            if (int(result['data']['status']['code']) == 0):
+                                result['changed'] = True
+                            else:
+                                fail_json = dict(msg='FAIL: Upgrade Failed for {0}'.format(fullurl), changed=False)
+                                module.fail_json(**fail_json)
+
+                    except requests.exceptions.RequestException as e:  # This is the correct syntax
+                        fail_json = dict(msg='GET: Received HTTP error for {0} : {1}'.format(fullurl, to_native(e)), changed=False)
+                        module.fail_json(**fail_json)
+
+                    # only remove if the file was downloaded
+                    if (localfilefamily == -1):
+                        if (int(module.params['removefileonexit']) == 1):
+                            os.remove(local_filename)
         else:
             result['data'] = "{ \"filelength\": \"0\", \"status\": { \"code\": \"1\", \"text\": \"device up to date\" } }"
     else:
         result['data'] = "{ \"filelength\": \"0\", \"status\": { \"code\": \"2\", \"text\": \"device bad family code: %s\" } }" % (family)
+
+    if (int(module.params['bootafterincremental']) == 1):
+        if (is_incremental > 0):
+            if result['changed']:
+                # Reboot device after incremental upgrade
+                fullurl = ("%s%s/api/v2/config/rebootlocalunit" % (protocol, to_native(module.params['cpm_url'])))
+                method = 'GET'
+                try:
+                    response = open_url(fullurl, data=None, method=method, validate_certs=module.params['validate_certs'], use_proxy=module.params['use_proxy'],
+                                        headers={'Content-Type': 'application/json', 'Authorization': "Basic %s" % auth})
+
+                except Exception as e:
+                    fail_json = dict(msg="On Reboot: Unexpected error for {0} : {1}".format(fullurl, to_native(e)), changed=False)
 
     module.exit_json(**result)
 
