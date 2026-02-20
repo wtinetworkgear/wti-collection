@@ -9,7 +9,7 @@ from ansible_collections.wti.remote.plugins.modules import cpm_status_info
 
 
 class DummyResponse:
-    def __init__(self, payload: dict):
+    def __init__(self, payload):
         self._payload = payload
 
     def read(self):
