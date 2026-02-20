@@ -8,7 +8,7 @@ import pytest
 from ansible_collections.wti.remote.plugins.modules import cpm_status_info
 
 
-class DummyResponse:
+class DummyResponse(object):
     def __init__(self, payload):
         self._payload = payload
 
@@ -16,7 +16,7 @@ class DummyResponse:
         return json.dumps(self._payload).encode("utf-8")
 
 
-class DummyModule:
+class DummyModule(object):
     def __init__(self, params):
         self.params = params
         self.exited = None
@@ -33,6 +33,7 @@ class DummyModule:
 
 def _patch_module(monkeypatch, params):
     dummy = DummyModule(params=params)
+    # Patch the AnsibleModule constructor used inside the module under test
     monkeypatch.setattr(cpm_status_info, "AnsibleModule", lambda *a, **k: dummy)
     return dummy
 
@@ -49,7 +50,9 @@ def test_success_https(monkeypatch):
     dummy = _patch_module(monkeypatch, params)
 
     def fake_open_url(url, **kwargs):
-        assert url.startswith("https://")
+        url_txt = cpm_status_info.to_native(url)
+        assert url_txt.startswith("https://")
+        assert url_txt.endswith("/api/v2/status/status")
         return DummyResponse({"vendor": "wti", "status": {"code": "0", "text": "OK"}})
 
     monkeypatch.setattr(cpm_status_info, "open_url", fake_open_url)
@@ -58,7 +61,7 @@ def test_success_https(monkeypatch):
         cpm_status_info.run_module()
 
     assert dummy.exited is not None
-    assert dummy.exited["changed"] is False
+    assert dummy.exited.get("changed") is False
     assert dummy.exited["data"]["vendor"] == "wti"
 
 
@@ -74,7 +77,9 @@ def test_success_http(monkeypatch):
     dummy = _patch_module(monkeypatch, params)
 
     def fake_open_url(url, **kwargs):
-        assert url.startswith("http://")
+        url_txt = cpm_status_info.to_native(url)
+        assert url_txt.startswith("http://")
+        assert url_txt.endswith("/api/v2/status/status")
         return DummyResponse({"vendor": "wti"})
 
     monkeypatch.setattr(cpm_status_info, "open_url", fake_open_url)
@@ -97,11 +102,11 @@ def test_http_error(monkeypatch):
     }
     dummy = _patch_module(monkeypatch, params)
 
-    # Use the HTTPError class that your module imports
     HTTPError = cpm_status_info.HTTPError
 
     def fake_open_url(url, **kwargs):
-        raise HTTPError(url, 401, "Unauthorized", hdrs=None, fp=None)
+        # HTTPError signature: (url, code, msg, hdrs, fp)
+        raise HTTPError(url, 401, "Unauthorized", None, None)
 
     monkeypatch.setattr(cpm_status_info, "open_url", fake_open_url)
 
@@ -109,7 +114,7 @@ def test_http_error(monkeypatch):
         cpm_status_info.run_module()
 
     assert dummy.failed is not None
-    assert "Received HTTP error" in dummy.failed["msg"]
+    assert "Received HTTP error" in dummy.failed.get("msg", "")
 
 
 def test_url_error(monkeypatch):
@@ -134,7 +139,7 @@ def test_url_error(monkeypatch):
         cpm_status_info.run_module()
 
     assert dummy.failed is not None
-    assert "Failed lookup url" in dummy.failed["msg"]
+    assert "Failed lookup url" in dummy.failed.get("msg", "")
 
 
 def test_ssl_validation_error(monkeypatch):
@@ -159,7 +164,7 @@ def test_ssl_validation_error(monkeypatch):
         cpm_status_info.run_module()
 
     assert dummy.failed is not None
-    assert "Error validating the server" in dummy.failed["msg"]
+    assert "Error validating the server" in dummy.failed.get("msg", "")
 
 
 def test_connection_error(monkeypatch):
@@ -184,4 +189,4 @@ def test_connection_error(monkeypatch):
         cpm_status_info.run_module()
 
     assert dummy.failed is not None
-    assert "Error connecting" in dummy.failed["msg"]
+    assert "Error connecting" in dummy.failed.get("msg", "")
