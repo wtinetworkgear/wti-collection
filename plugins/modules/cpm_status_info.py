@@ -298,7 +298,7 @@ def run_module():
     # Python 3.5 json.loads expects text, not bytes
     raw = to_text(raw, errors='surrogate_or_strict')
     result['data'] = json.loads(raw)
-    
+
     module.exit_json(**result)
 
 
