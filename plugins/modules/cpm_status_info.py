@@ -117,7 +117,7 @@ data:
             returned: success
             type: str
             sample: "8"
-        option1/2:
+        optionstext:
             description: Various Identity options of the WTI.
             returned: success
             type: str
