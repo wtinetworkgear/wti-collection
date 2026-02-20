@@ -107,7 +107,7 @@ data (always, complex, )
     Total Power Outlet plugs of the WTI device.
 
 
-  option1/2 (success, str, WPO-STRT-CPM8 / W4G-VZW-CPM8)
+  optionstext (success, str, WPO-STRT-CPM8 / W4G-VZW-CPM8)
     Various Identity options of the WTI.
 
 
