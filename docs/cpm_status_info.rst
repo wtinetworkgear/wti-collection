@@ -55,7 +55,7 @@ Notes
 -----
 
 .. note::
-   - Use ``groups/cpm`` in ``module_defaults`` to set common options used between CPM modules.)
+   - Use ``groups/cpm`` in ``module_defaults`` to set common s used between CPM modules.)
 
 
 
