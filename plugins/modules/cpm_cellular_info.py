@@ -191,7 +191,9 @@ def run_module():
         fail_json = dict(msg='GET: Error connecting to {0} : {1}'.format(fullurl, to_native(e)), changed=False)
         module.fail_json(**fail_json)
 
-    result['data'] = json.loads(response.read())
+    raw = response.read()
+    raw = to_text(raw, errors='surrogate_or_strict')
+    result['data'] = json.loads(raw)
 
     module.exit_json(**result)
 

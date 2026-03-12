@@ -195,6 +195,7 @@ def run_module():
         module.fail_json(**fail_json)
 
     result['data'] = response.read()
+
     module.exit_json(**result)
 
 
