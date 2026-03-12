@@ -243,7 +243,7 @@ def assemble_json(cpmmodule, existing_interface):
     is_changed = 0
     json_load = ""
     ports = None
-    web_trace = web_ocsp = web_term = web_timout = None
+    web_trace = web_ocsp = web_term = web_timeout = None
     web_httpenable = web_httpport = None
     web_httpsenable = web_httpsport = None
     web_harden = None
