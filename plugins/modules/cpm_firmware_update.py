@@ -374,6 +374,7 @@ def run_module():
 
         # if the local version is less than the online latest version ignore all incremental upgrades
         wti_incremental_total = 0
+        wti_incremental_list = ""
 
         if ((float(local_release_version)) == (float(remote_release_version))):
             if (((float(local_release_version) < 8.09) & (family == 1)) | ((float(local_release_version) < 4.05) & (family == 0))):
