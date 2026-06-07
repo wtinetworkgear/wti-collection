@@ -13,7 +13,7 @@
         cpm_username: "{{ ansible_user }}"
         cpm_password: "{{ ansible_pw }}"
         use_https: "{{ use_https | default(true) }}"
-        validate_certs: "{{ validate_certs | default(true) }}"
+        validate_certs: "{{ validate_certs | default(false) }}"
       register: testout
 
     - name: Display Temperature Info
