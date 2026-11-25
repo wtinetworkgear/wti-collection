@@ -2,7 +2,7 @@
 
 namespace: wti
 name: remote
-version: 1.0.12
+version: 1.0.13
 
 readme: README.md
 
@@ -15,7 +15,7 @@ authors:
 ### OPTIONAL but strongly recommended
 
 # A short summary description of the collection
-description: Modules for interacting with  WTI remote OOB and PDU devices
+description: Modules for interacting with WTI remote OOB and PDU devices
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
