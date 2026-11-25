@@ -476,41 +476,47 @@ def run_module():
     if (int(statuscode) == 0):
         local_filename = None
         if ((float(local_release_version) < float(remote_release_version)) or (forceupgrade == 1)) or (localfilefamily >= 0) or (wti_incremental_total > 0):
-            if (module.check_mode is False):
-                if (localfilefamily == -1):
-                    INCPart = 0
-                    while wti_incremental_total != -1:
-                        time.sleep(5)
+            if (localfilefamily == -1):
+                INCPart = 0
+                while wti_incremental_total != -1:
+                    if (verbosity):
+                        module.warn("WTI-1 wti_incremental_total:%d, is_incremental:%d, Sleep(35)" % (wti_incremental_total, is_incremental))
+
+                    time.sleep(5)
+
+                    if (wti_incremental_total == 0):
+                        online_file_location = result['data']["config"]["imageurl"]
+                        wti_incremental_total = -1  # only go through one time
+                    else:
+                        is_incremental = is_incremental + 1
+                        online_file_location = wti_incremental_list[0]['imageurl']
+                        INCPart = int(wti_incremental_list[0]['vpart'])
+                        INCTitle = (wti_incremental_list[0]['title'])
+                        wti_incremental_total = wti_incremental_total - 1
+                        wti_incremental_list.remove(wti_incremental_list[0])
 
                         if (wti_incremental_total == 0):
-                            online_file_location = result['data']["config"]["imageurl"]
-                            wti_incremental_total = -1  # only go through one time
-                        else:
-                            is_incremental = is_incremental + 1
-                            online_file_location = wti_incremental_list[0]['imageurl']
-                            INCPart = int(wti_incremental_list[0]['vpart'])
-                            INCTitle = (wti_incremental_list[0]['title'])
-                            wti_incremental_total = wti_incremental_total - 1
-                            wti_incremental_list.remove(wti_incremental_list[0])
+                            wti_incremental_total = -1  # Done with loop
 
-                            if (wti_incremental_total == 0):
-                                wti_incremental_total = -1  # Done with loop
+                    local_filename = online_file_location[online_file_location.rfind("/") + 1:]
+                    local_filename = tempfile.gettempdir() + "/" + local_filename
 
-                        local_filename = online_file_location[online_file_location.rfind("/") + 1:]
-                        local_filename = tempfile.gettempdir() + "/" + local_filename
+                    response = requests.get(online_file_location, stream=True)
+                    handle = open(local_filename, "wb")
+                    for chunk in response.iter_content(chunk_size=512):
+                        if chunk:  # filter out keep-alive new chunks
+                            handle.write(chunk)
+                    handle.close()
 
-                        response = requests.get(online_file_location, stream=True)
-                        handle = open(local_filename, "wb")
-                        for chunk in response.iter_content(chunk_size=512):
-                            if chunk:  # filter out keep-alive new chunks
-                                handle.write(chunk)
-                        handle.close()
+                    # SEND the file to the WTI device
+                    # 3. upload new os image to WTI device
+                    fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
+                    files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
 
-                        # SEND the file to the WTI device
-                        # 3. upload new os image to WTI device
-                        fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
-                        files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
+                    if (verbosity):
+                        module.warn("WTI-1 fullurl:%s, files:%s, Sleep(35)" % (fullurl, files))
 
+                    if (module.check_mode is False):
                         try:
                             response = requests.post(fullurl, files=files, auth=(to_native(module.params['cpm_username']),
                                                      to_native(module.params['cpm_password'])), verify=(module.params['validate_certs']), stream=True)
@@ -555,22 +561,25 @@ def run_module():
                             if (int(module.params['removefileonexit']) == 1):
                                 os.remove(local_filename)
 
+                    # time to let the incremental install
+                    time.sleep(30)
+            else:
+                if (family == localfilefamily):
+                    local_filename = usersuppliedfilename
                 else:
-                    if (family == localfilefamily):
-                        local_filename = usersuppliedfilename
-                    else:
-                        module.log(msg="FAMILY MISMATCH: Your local file and the device do not match family types.")
-                        fail_json = dict(msg='FAIL: (3) Upgrade Failed for {0}'.format(fullurl), changed=False)
-                        module.fail_json(**fail_json)
+                    module.log(msg="FAMILY MISMATCH: Your local file and the device do not match family types.")
+                    fail_json = dict(msg='FAIL: (3) Upgrade Failed for {0}'.format(fullurl), changed=False)
+                    module.fail_json(**fail_json)
 
-                    # SEND the file to the WTI device
-                    # 3. upload new os image to WTI device
-                    fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
-                    files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
+                # SEND the file to the WTI device
+                # 3. upload new os image to WTI device
+                fullurl = ("%s%s/cgi-bin/getfile" % (protocol, to_native(module.params['cpm_url'])))
+                files = {'file': ('name.binary', open(local_filename, 'rb'), 'application/octet-stream')}
 
-                    if (verbosity):
-                        module.warn("fullurl [%s]" % (fullurl))
+                if (verbosity):
+                    module.warn("fullurl [%s]" % (fullurl))
 
+                if (module.check_mode is False):
                     try:
                         response = requests.post(fullurl, files=files, auth=(to_native(module.params['cpm_username']),
                                                  to_native(module.params['cpm_password'])), verify=(module.params['validate_certs']), stream=True)
@@ -591,6 +600,7 @@ def run_module():
                     if (localfilefamily == -1):
                         if (int(module.params['removefileonexit']) == 1):
                             os.remove(local_filename)
+
         else:
             result['data'] = "{ \"filelength\": \"0\", \"status\": { \"code\": \"1\", \"text\": \"device up to date\" } }"
     else:
